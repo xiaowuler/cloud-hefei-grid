@@ -6,6 +6,6 @@ import java.lang.annotation.*;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 public @interface BaseAction {
-    boolean isNeedElementCode();
+    boolean isNeedLocation();
     int apiId();
 }

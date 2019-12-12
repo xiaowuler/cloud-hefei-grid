@@ -7,11 +7,11 @@ eureka:
       defaultZone: http://localhost:8001/eureka/
   instance:
     preferIpAddress: true
-    instance-id: localhost:${server.port}
+    instance-id: ${spring.cloud.client.ip-address}:${server.port}
 
 spring:
   application:
     name: provider-mongodb
   data:
     mongodb:
-      uri: mongodb://10.124.102.42:27017/values
+      uri: mongodb://10.129.4.202:27017/values

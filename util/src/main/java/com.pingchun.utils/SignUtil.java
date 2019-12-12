@@ -46,6 +46,8 @@ public class SignUtil {
             return false;
         }catch (TokenExpiredException tee){
             return false;
+        }catch (Exception ex){
+            return false;
         }
     }
 

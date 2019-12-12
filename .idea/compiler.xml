@@ -6,16 +6,18 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="common" />
         <module name="eureka-server" />
-        <module name="grid-api" />
+        <module name="common" />
         <module name="mongodb" />
-        <module name="provider-mongodb" />
         <module name="provider-mysql" />
         <module name="util" />
-        <module name="weather-service" />
+        <module name="provider-mongodb" />
+        <module name="grid-api" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="weather-service" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">

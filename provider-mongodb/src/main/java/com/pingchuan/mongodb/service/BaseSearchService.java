@@ -1,22 +1,19 @@
 package com.pingchuan.mongodb.service;
 
-import com.pingchuan.dto.base.AreaElement;
-import com.pingchuan.parameter.base.*;
+import com.pingchuan.dto.base.Element;
+import com.pingchuan.dto.base.forecast.ForecastElement;
+import com.pingchuan.parameter.base.ForecastParameter;
+import com.pingchuan.parameter.base.TimeEffectParameter;
+import com.pingchuan.parameter.base.TimeRangeParameter;
 
 import java.util.List;
 
 public interface BaseSearchService {
-    List<AreaElement> findNJGridsByArea(AreaParameter areaParameter);
+    List<Element> findPointValue(TimeEffectParameter timeEffectParameter);
 
-    List<AreaElement> findNJGridsByLocation(LocationParameter location);
+    List<Element> findLineValues(TimeRangeParameter timeRangeParameter);
 
-    List<AreaElement> findNJGridsByForecastTimeRange(TimeRangeParameter timeRangeParameter);
+    List<Element> findRegionValues(TimeEffectParameter timeEffectParameter);
 
-    List<AreaElement> findNJGridsByTimeEffect(TimeEffectParameter timeEffectParameter);
-
-    List<AreaElement> findNJGridsByElementThresholdArea(ThresholdAreaParameter thresholdAreaParameter);
-
-    List<AreaElement> findNJGridsByElementThresholdLocation(ThresholdLocationParameter thresholdLocationParameter);
-
-    List<AreaElement> findNJGridsByNonArea(AreaParameter areaParameter);
+    List<ForecastElement> findWeatherForecast(ForecastParameter forecastParameter);
 }

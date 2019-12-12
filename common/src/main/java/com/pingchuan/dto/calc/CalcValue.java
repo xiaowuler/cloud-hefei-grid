@@ -1,7 +1,6 @@
 package com.pingchuan.dto.calc;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.pingchuan.dto.base.Forecast;
 import lombok.Data;
 
 import java.util.List;

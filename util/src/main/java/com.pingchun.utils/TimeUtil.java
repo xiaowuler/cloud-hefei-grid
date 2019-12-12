@@ -15,6 +15,14 @@ import java.util.List;
  **/
 public class TimeUtil {
 
+    public static Date getTodayEightOClock(){
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.HOUR_OF_DAY, 20);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        return c.getTime();
+    }
+
     public static String CovertDateToString(String timeFormat, Date date){
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(timeFormat);
         return simpleDateFormat.format(date);
@@ -33,6 +41,13 @@ public class TimeUtil {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         calendar.add(Calendar.DAY_OF_MONTH, day);
+        return calendar.getTime();
+    }
+
+    public static Date addHour(Date date, int hour){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.HOUR_OF_DAY, hour);
         return calendar.getTime();
     }
 

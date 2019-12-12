@@ -1,4 +1,4 @@
-package com.pingchuan.dto.calc;
+package com.pingchuan.dto.base;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -9,47 +9,48 @@ import java.util.Date;
 import java.util.List;
 
 @Data
-public class CalcElement {
-    @Field("area_code")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String areaCode;
+public class Element {
 
-    @Field("area_name")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String areaName;
-
-    @Field("update_time")
+    @Field("initial_time")
     @JsonFormat(locale="zh", timezone="GMT+8", pattern="yyyy-MM-dd HH:mm:ss")
-    private Date updateTime;
-
-    @Field("start_time")
-    @JsonFormat(locale="zh", timezone="GMT+8", pattern="yyyy-MM-dd HH:mm:ss")
-    private Date startTime;
-
-    @Field("forecast_model")
-    private String forecastModel;
+    private Date initialTime;
 
     @Field("element_code")
     private String elementCode;
 
+    @Field("mode_code")
+    private String modeCode;
+
+    @Field("org_code")
+    private String orgCode;
+
+    private Coordinate coordinate;
+
+    @Field("forecast_interval")
+    private Integer forecastInterval;
+
+    @Field("forecast_level")
+    private Integer forecastLevel;
+
     @Field("forecast_time")
     @JsonFormat(locale="zh", timezone="GMT+8", pattern="yyyy-MM-dd HH:mm:ss")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Date forecastTime;
 
     @Field("time_effect")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Integer timeEffect;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private CalcValue max;
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private CalcValue min;
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Double avg;
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Location> locations;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private List<Forecast> forecasts;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private double[][] values;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private double[][] u_values;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private double[][] v_values;
 }

@@ -1,18 +1,33 @@
 package com.pingchuan.mongodb.service.impl;
 
 import com.pingchuan.contants.TimeFormat;
-import com.pingchuan.dto.base.AreaElement;
+import com.pingchuan.dto.base.Element;
+import com.pingchuan.dto.base.ElementCode;
+import com.pingchuan.dto.base.Forecast;
+import com.pingchuan.dto.base.WeatherElement;
+import com.pingchuan.dto.base.forecast.Day;
+import com.pingchuan.dto.base.forecast.Detail;
+import com.pingchuan.dto.base.forecast.ForecastElement;
+import com.pingchuan.dto.base.forecast.Hour;
+import com.pingchuan.model.ElementInfo;
 import com.pingchuan.parameter.base.*;
 import com.pingchuan.mongodb.dao.*;
 import com.pingchuan.mongodb.service.BaseSearchService;
+import com.pingchun.utils.Calc;
 import com.pingchun.utils.TimeUtil;
+import com.pingchun.utils.WeatherDecodeLib;
+import com.pingchun.utils.WeatherPhenomenon;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class BaseSearchServiceImpl implements BaseSearchService {
@@ -33,135 +48,192 @@ public class BaseSearchServiceImpl implements BaseSearchService {
     private BaseSearchDao baseSearchDao;
 
     @Override
-    public List<AreaElement> findNJGridsByArea(AreaParameter areaParameter) {
-
-        List<AggregationOperation> aggregationOperations = new ArrayList<>();
-        List<AggregationOperation> elementInfos = elementInfoDao.findByUpdateTimeAndStartTimeAndElementCodeAndForecastModel(areaParameter.getUpdateDate(), areaParameter.getStartDate(), areaParameter.getElementCode(), areaParameter.getForecastModel());
-        aggregationOperations.addAll(elementInfos);
-        List<AggregationOperation> trapezoids = trapezoidDao.findByAreaCode(areaParameter.getAreaCode());
-        aggregationOperations.addAll(trapezoids);
-        List<AggregationOperation> forecastInfos = forecastInfoDao.findByForecastTime(areaParameter.getForecastDate());
-        aggregationOperations.addAll(forecastInfos);
-        List<AggregationOperation> elementValues = elementValueDao.findById(TimeUtil.CovertDateToString(TimeFormat.ELEMENT_VALUES_NAME, areaParameter.getStartDate()));
-        aggregationOperations.addAll(elementValues);
-
-        return baseSearchDao.findNJGridsByArea(aggregationOperations);
+    public List<Element> findPointValue(TimeEffectParameter timeEffectParameter) {
+        List<AggregationOperation> elementInfos = elementInfoDao.findOne(timeEffectParameter.getElementCode(), timeEffectParameter.getInitialDate(), timeEffectParameter.getModeCode(), timeEffectParameter.getOrgCode(), timeEffectParameter.getForecastInterval(), timeEffectParameter.getForecastLevel());
+        List<AggregationOperation> trapezoids = trapezoidDao.findLocationIdByElementInfo(timeEffectParameter.getLocations(), timeEffectParameter.getElementCode(), timeEffectParameter.getInitialDate(), timeEffectParameter.getModeCode(), timeEffectParameter.getOrgCode(), timeEffectParameter.getForecastInterval(), timeEffectParameter.getForecastLevel());
+        List<AggregationOperation> forecastInfos = forecastInfoDao.findByTimeEffect(TimeUtil.CovertDateToString(TimeFormat.REAL_COLLECTION_NAME, timeEffectParameter.getInitialDate()), timeEffectParameter.getTimeEffect());
+        List<AggregationOperation> elementValues = elementValueDao.findById(TimeUtil.CovertDateToString(TimeFormat.ELEMENT_VALUES_NAME, timeEffectParameter.getInitialDate()));
+        elementInfos.addAll(trapezoids);
+        elementInfos.addAll(forecastInfos);
+        elementInfos.addAll(elementValues);
+        return baseSearchDao.findPointValue(elementInfos);
     }
 
     @Override
-    public List<AreaElement> findNJGridsByLocation(LocationParameter location) {
-        List<AggregationOperation> aggregationOperations = new ArrayList<>();
-        List<AggregationOperation> elementInfos = elementInfoDao.findByUpdateTimeAndStartTimeAndElementCodeAndForecastModel(location.getUpdateDate(), location.getStartDate(), location.getElementCode(), location.getForecastModel());
-        aggregationOperations.addAll(elementInfos);
-        List<AggregationOperation> trapezoids = trapezoidDao.findByLocation(location.getLocations());
-        aggregationOperations.addAll(trapezoids);
-        List<AggregationOperation> forecastInfos = forecastInfoDao.findByForecastTime(location.getForecastDate());
-        aggregationOperations.addAll(forecastInfos);
-        List<AggregationOperation> elementValues = elementValueDao.findById(TimeUtil.CovertDateToString(TimeFormat.ELEMENT_VALUES_NAME, location.getStartDate()));
-        aggregationOperations.addAll(elementValues);
-
-        return baseSearchDao.findNJGridsByLocation(aggregationOperations);
+    public List<Element> findLineValues(TimeRangeParameter timeRangeParameter) {
+        List<AggregationOperation> elementInfos = elementInfoDao.findOne(timeRangeParameter.getElementCode(), timeRangeParameter.getInitialDate(), timeRangeParameter.getModeCode(), timeRangeParameter.getOrgCode(), timeRangeParameter.getForecastInterval(), timeRangeParameter.getForecastLevel());
+        List<AggregationOperation> trapezoids = trapezoidDao.findLocationIdByElementInfo(timeRangeParameter.getLocations(), timeRangeParameter.getElementCode(), timeRangeParameter.getInitialDate(), timeRangeParameter.getModeCode(), timeRangeParameter.getOrgCode(), timeRangeParameter.getForecastInterval(), timeRangeParameter.getForecastLevel());
+        List<AggregationOperation> forecastInfos = forecastInfoDao.findByTimeRange(TimeUtil.CovertDateToString(TimeFormat.REAL_COLLECTION_NAME, timeRangeParameter.getInitialDate()), timeRangeParameter.getStartForecastDate(), timeRangeParameter.getEndForecastDate());
+        List<AggregationOperation> elementValues = elementValueDao.findById(TimeUtil.CovertDateToString(TimeFormat.ELEMENT_VALUES_NAME, timeRangeParameter.getInitialDate()));
+        elementInfos.addAll(trapezoids);
+        elementInfos.addAll(forecastInfos);
+        elementInfos.addAll(elementValues);
+        return baseSearchDao.findLineValues(elementInfos);
     }
 
     @Override
-    public List<AreaElement> findNJGridsByForecastTimeRange(TimeRangeParameter timeRangeParameter) {
-        List<AggregationOperation> aggregationOperations = new ArrayList<>();
-        List<AggregationOperation> elementInfos = elementInfoDao.findByUpdateTimeAndStartTimeAndElementCodeAndForecastModel(timeRangeParameter.getUpdateDate(), timeRangeParameter.getStartDate(), timeRangeParameter.getElementCode(), timeRangeParameter.getForecastModel());
-        aggregationOperations.addAll(elementInfos);
-        List<AggregationOperation> trapezoids = trapezoidDao.findByLocation(timeRangeParameter.getLocations());
-        aggregationOperations.addAll(trapezoids);
-        List<AggregationOperation> forecastInfos = forecastInfoDao.findByForecastTimeRange(timeRangeParameter.getStartForecastDate(), timeRangeParameter.getEndForecastDate());
-        aggregationOperations.addAll(forecastInfos);
-        List<AggregationOperation> elementValues = elementValueDao.findById(TimeUtil.CovertDateToString(TimeFormat.ELEMENT_VALUES_NAME, timeRangeParameter.getStartDate()));
-        aggregationOperations.addAll(elementValues);
-
-        return baseSearchDao.findNJGridsByArea(aggregationOperations);
+    public List<Element> findRegionValues(TimeEffectParameter timeEffectParameter) {
+        List<AggregationOperation> elementInfos = elementInfoDao.findOne(timeEffectParameter.getElementCode(), timeEffectParameter.getInitialDate(), timeEffectParameter.getModeCode(), timeEffectParameter.getOrgCode(), timeEffectParameter.getForecastInterval(), timeEffectParameter.getForecastLevel());
+        List<AggregationOperation> forecastInfos = forecastInfoDao.findOne(TimeUtil.CovertDateToString(TimeFormat.REAL_COLLECTION_NAME, timeEffectParameter.getInitialDate()), timeEffectParameter.getTimeEffect());
+        elementInfos.addAll(forecastInfos);
+        return baseSearchDao.findRegionValues(elementInfos);
     }
 
     @Override
-    public List<AreaElement> findNJGridsByTimeEffect(TimeEffectParameter timeEffectParameter) {
-        List<AggregationOperation> aggregationOperations = new ArrayList<>();
-        List<AggregationOperation> elementInfos = elementInfoDao.findByUpdateTimeAndStartTimeAndElementCodeAndForecastModel(timeEffectParameter.getUpdateDate(), timeEffectParameter.getStartDate(), timeEffectParameter.getElementCode(), timeEffectParameter.getForecastModel());
-        aggregationOperations.addAll(elementInfos);
-        List<AggregationOperation> trapezoids = trapezoidDao.findByAreaCode(timeEffectParameter.getAreaCode());
-        aggregationOperations.addAll(trapezoids);
-        List<AggregationOperation> forecastInfos = forecastInfoDao.findByForecastTime(timeEffectParameter.getForecastDate());
-        aggregationOperations.addAll(forecastInfos);
-        List<AggregationOperation> elementValues = elementValueDao.findById(TimeUtil.CovertDateToString(TimeFormat.ELEMENT_VALUES_NAME, timeEffectParameter.getStartDate()));
-        aggregationOperations.addAll(elementValues);
+    public List<ForecastElement> findWeatherForecast(ForecastParameter forecastParameter) {
+        List<ElementInfo> elementInfos = getInitialTime(forecastParameter.getInitialDate());
+        if (elementInfos.size() < 7)
+            return new ArrayList<>();
 
-        return baseSearchDao.findNJGridsByArea(aggregationOperations);
-    }
+        Date initialTime = elementInfos.get(0).getInitialTime();
+        String trapezoidInfoId = elementInfos.get(0).getTrapezoidInfoId();
+        List<AggregationOperation> elementInfo = elementInfoDao.findOneById(elementInfos.stream().map(e -> e.getId()).collect(Collectors.toList()));
+        List<AggregationOperation> trapezoidInfos = trapezoidDao.findByLocation(forecastParameter.getLocations(), trapezoidInfoId);
 
-    @Override
-    public List<AreaElement> findNJGridsByElementThresholdArea(ThresholdAreaParameter thresholdAreaParameter) {
-        List<AggregationOperation> aggregationOperations = new ArrayList<>();
-        List<AggregationOperation> elementInfos = elementInfoDao.findByUpdateTimeAndStartTimeAndElementCodeAndForecastModel(thresholdAreaParameter.getUpdateDate(), thresholdAreaParameter.getStartDate(), thresholdAreaParameter.getElementCode(), thresholdAreaParameter.getForecastModel());
-        aggregationOperations.addAll(elementInfos);
-        List<AggregationOperation> trapezoids = trapezoidDao.findByAreaCode(thresholdAreaParameter.getAreaCode());
-        aggregationOperations.addAll(trapezoids);
-        List<AggregationOperation> forecastInfos = forecastInfoDao.findByForecastTime(thresholdAreaParameter.getForecastDate());
-        aggregationOperations.addAll(forecastInfos);
-        return getThreshold(thresholdAreaParameter.getThresholdValues(), aggregationOperations, TimeUtil.CovertDateToString(TimeFormat.ELEMENT_VALUES_NAME, thresholdAreaParameter.getStartDate()), true);
-    }
-
-    private List<AreaElement> getThreshold(List<double[]> thresholds, List<AggregationOperation> infos, String collectionName, boolean isArea){
-        List<AreaElement> areaElements = new ArrayList<>();
-
-        for (double[] threshold : thresholds){
-
-            if (StringUtils.isEmpty(threshold)) {
-                continue;
-            }
-
-            List<AggregationOperation> aggregationOperations = new ArrayList<>();
-            aggregationOperations.addAll(infos);
-            List<AggregationOperation> elementValues = elementValueDao.findByThreshold(collectionName, threshold);
-            aggregationOperations.addAll(elementValues);
-
-            List<AreaElement> elements;
-            if (isArea){
-                elements = baseSearchDao.findNJGridsByArea(aggregationOperations);
-            }else {
-                elements = baseSearchDao.findNJGridsByLocation(aggregationOperations);
-            }
-
-            if (elements.size() == 0){
-                continue;
-            }
-            AreaElement areaElement = elements.get(0);
-            areaElement.setThreshold(threshold);
-            areaElements.add(areaElement);
+        if (StringUtils.isEmpty(forecastParameter.getStartForecastDate()) || StringUtils.isEmpty(forecastParameter.getEndForecastDate())){
+            forecastParameter.setStartForecastDate(initialTime);
+            forecastParameter.setEndForecastDate(TimeUtil.addDay(initialTime, 7));
         }
 
-        return areaElements;
+        List<AggregationOperation> forecastInfos = forecastInfoDao.findByTimeRange(TimeUtil.CovertDateToString(TimeFormat.REAL_COLLECTION_NAME, initialTime), forecastParameter.getStartForecastDate(), forecastParameter.getEndForecastDate());
+        List<AggregationOperation> elementValues = elementValueDao.findById(TimeUtil.CovertDateToString(TimeFormat.ELEMENT_VALUES_NAME, initialTime));
+        elementInfo.addAll(trapezoidInfos);
+        elementInfo.addAll(forecastInfos);
+        elementInfo.addAll(elementValues);
+        List<WeatherElement> weatherElements = baseSearchDao.findWeatherForecast(elementInfo);
+        return calcWeatherPhenomena(weatherElements);
     }
 
-    @Override
-    public List<AreaElement> findNJGridsByElementThresholdLocation(ThresholdLocationParameter thresholdLocationParameter) {
-        List<AggregationOperation> aggregationOperations = new ArrayList<>();
-        List<AggregationOperation> elementInfos = elementInfoDao.findByUpdateTimeAndStartTimeAndElementCodeAndForecastModel(thresholdLocationParameter.getUpdateDate(), thresholdLocationParameter.getStartDate(), thresholdLocationParameter.getElementCode(), thresholdLocationParameter.getForecastModel());
-        aggregationOperations.addAll(elementInfos);
-        List<AggregationOperation> trapezoids = trapezoidDao.findByLocation(thresholdLocationParameter.getLocations());
-        aggregationOperations.addAll(trapezoids);
-        List<AggregationOperation> forecastInfos = forecastInfoDao.findByForecastTime(thresholdLocationParameter.getForecastDate());
-        aggregationOperations.addAll(forecastInfos);
-        return getThreshold(thresholdLocationParameter.getThresholdValues(), aggregationOperations, TimeUtil.CovertDateToString(TimeFormat.ELEMENT_VALUES_NAME, thresholdLocationParameter.getStartDate()), false);
+    private List<ForecastElement> calcWeatherPhenomena(List<WeatherElement> elements){
 
+        WeatherDecodeLib weatherDecodeLib = new WeatherDecodeLib();
+        WeatherPhenomenon[] weatherPhenomenas = weatherDecodeLib.conditionMaker(3);
+        List<ForecastElement> forecastElements = new ArrayList<>();
+        for(WeatherElement weatherElement : elements){
+            Date startTime = weatherElement.getInitialTime();
+            Date endTime = TimeUtil.addDay(startTime, 7);
+            Date endDateTime;
+            int hour = startTime.getHours();
+
+            List<Day> days = new ArrayList<>();
+
+            int index = hour >= 8 || hour < 20 ? 0 : 1;
+            for (Date time = startTime; endTime.compareTo(time) == 1; time = endDateTime){
+                endDateTime = TimeUtil.addHour(time, 12);
+                Date finalTime = time;
+                Date finalEndDateTime = endDateTime;
+                List<Forecast> forecast = weatherElement.getForecasts().stream().filter(w -> w.getForecastTime().compareTo(finalTime) != -1 && w.getForecastTime().compareTo(finalEndDateTime) == -1).collect(Collectors.toList());
+                if (index == 0 || index == 1 || index % 2 == 0){
+                    Day day = new Day();
+                    day.setDate(TimeUtil.CovertDateToString("yyyy-MM-dd", time));
+                    days.add(calcHalfDay(forecast, weatherDecodeLib, weatherPhenomenas, day));
+                    index += 2;
+                }else {
+                    Day day = days.get(days.size() - 1);
+                    days.remove(day);
+                    days.add(calcHalfDay(forecast, weatherDecodeLib, weatherPhenomenas, day));
+                }
+                index ++;
+            }
+
+            ForecastElement forecastElement = new ForecastElement();
+            forecastElement.setDays(days);
+            forecastElement.setLoc(weatherElement.getLoc());
+            forecastElements.add(forecastElement);
+        }
+
+        return forecastElements;
     }
 
-    @Override
-    public List<AreaElement> findNJGridsByNonArea(AreaParameter areaParameter) {
-        List<AggregationOperation> aggregationOperations = new ArrayList<>();
-        List<AggregationOperation> elementInfos = elementInfoDao.findByUpdateTimeAndStartTimeAndElementCodeAndForecastModel(areaParameter.getUpdateDate(), areaParameter.getStartDate(), areaParameter.getElementCode(), areaParameter.getForecastModel());
-        aggregationOperations.addAll(elementInfos);
-        List<AggregationOperation> trapezoids = trapezoidDao.findByNonAreaCode();
-        aggregationOperations.addAll(trapezoids);
-        List<AggregationOperation> forecastInfos = forecastInfoDao.findByForecastTime(areaParameter.getForecastDate());
-        aggregationOperations.addAll(forecastInfos);
-        List<AggregationOperation> elementValues = elementValueDao.findById(TimeUtil.CovertDateToString(TimeFormat.ELEMENT_VALUES_NAME, areaParameter.getStartDate()));
-        aggregationOperations.addAll(elementValues);
+    private Day calcHalfDay(List<Forecast> forecasts, WeatherDecodeLib weatherDecodeLib, WeatherPhenomenon[] weatherPhenomenas, Day day){
+        List<Double> er03 = new ArrayList<>();
+        List<Double> ect = new ArrayList<>();
+        List<Double> pph = new ArrayList<>();
 
-        return baseSearchDao.findNJGridsByArea(aggregationOperations);
+        Detail detail = new Detail();
+        List<Hour> hours = new ArrayList<>();
+        forecasts.sort(Comparator.comparing(Forecast::getForecastTime));
+        for (Forecast forecast : forecasts){
+            Hour hour = new Hour();
+            hour.setDay(TimeUtil.CovertDateToString("dd日HH时", forecast.getForecastTime()));
+            List<ElementCode> elementCodes = forecast.getElementCodes();
+
+            for (ElementCode elementCode : elementCodes){
+                switch (elementCode.getElementCode()){
+                    case "TMP":
+                        hour.setTmp(elementCode.getValue() - 274.15);
+                        break;
+                    case "EDA10":
+                        hour.setWindDirection(Calc.windDirection(elementCode.getUValue(), elementCode.getVValue()));
+                        hour.setWindSpeed(Calc.windSpeed(elementCode.getUValue(), elementCode.getVValue()));
+                        break;
+                    case "ER03":
+                        er03.add(elementCode.getValue());
+                        break;
+                    case "PPH":
+                        pph.add(elementCode.getValue());
+                        break;
+                    case "ECT":
+                        ect.add(elementCode.getValue());
+                        break;
+                    case "TMAX":
+                        day.setMaxTmp(elementCode.getValue() - 274.15);
+                        break;
+                    case "TMIN":
+                        day.setMinTmp(elementCode.getValue() - 274.15);
+                        break;
+                }
+            }
+
+            hours.add(hour);
+        }
+
+        if (hours.size() > 0){
+            detail = setMaxWind(hours, detail);
+            detail.setHours(hours);
+        }
+
+        detail.setWea(weatherDecodeLib.getWeatherElement(weatherPhenomenas, er03, pph, ect));
+        if (forecasts.size() > 0){
+            int hour = forecasts.get(0).getForecastTime().getHours();
+            if (hour >= 8 && hour < 20){
+                day.setPrev12Hours(detail);
+            }else {
+                day.setNext12Hours(detail);
+            }
+        }
+
+        return day;
+    }
+
+    private Detail setMaxWind(List<Hour> hours, Detail detail){
+        detail.setWindSpeed(hours.get(0).getWindSpeed());
+        detail.setWindDirection(hours.get(0).getWindDirection());
+        for(Hour hour : hours){
+            if (hour.getWindSpeed() > detail.getWindSpeed()){
+                detail.setWindSpeed(hour.getWindSpeed());
+                detail.setWindDirection(hour.getWindDirection());
+            }
+        }
+
+        return detail;
+    }
+
+    private List<ElementInfo> getInitialTime(Date initialTime){
+        if (!StringUtils.isEmpty(initialTime)) {
+            return elementInfoDao.findByInitialTime(initialTime);
+        }
+
+        List<ElementInfo> initialTimes = elementInfoDao.findSevenDayInitialTimes();
+
+        List<ElementInfo> elementInfos = null;
+        for (ElementInfo elementInfo : initialTimes){
+            elementInfos = elementInfoDao.findByInitialTime(elementInfo.getInitialTime());
+            if (elementInfos.size() == 7){
+                break;
+            }
+        }
+
+        return elementInfos;
     }
 }

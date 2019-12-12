@@ -12,7 +12,6 @@
         <option value="$PROJECT_DIR$/provider-mongodb/pom.xml" />
         <option value="$PROJECT_DIR$/grid-api/pom.xml" />
         <option value="$PROJECT_DIR$/provider-mysql/pom.xml" />
-        <option value="$PROJECT_DIR$/weather-service/pom.xml" />
       </list>
     </option>
   </component>

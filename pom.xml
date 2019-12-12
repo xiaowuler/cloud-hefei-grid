@@ -36,6 +36,11 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-commons</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <version>RELEASE</version>
@@ -75,13 +80,13 @@
                 <scope>import</scope>
             </dependency>
         </dependencies>
+
     </dependencyManagement>
 
     <modules>
         <module>eureka-server</module>
         <module>provider-mongodb</module>
         <module>grid-api</module>
-        <module>weather-service</module>
         <module>common</module>
         <module>util</module>
     </modules>

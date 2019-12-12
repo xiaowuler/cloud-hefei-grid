@@ -60,11 +60,11 @@ public class BaseAop {
             interfaceLog.setInterfaceId(action.apiId());
 
             //验证接口访问
-            Interface api = interfaceService.findOneById(action.apiId());
-            if (api == null || api.getEnabled() == 0) {
-                interfaceLog.setResultCode(ResultCode.API_INVALID);
-                return new ApiResponse(ResultCode.API_INVALID, "接口未开启", null);
-            }
+//            Interface api = interfaceService.findOneById(action.apiId());
+//            if (api == null || api.getEnabled() == 0) {
+//                interfaceLog.setResultCode(ResultCode.API_INVALID);
+//                return new ApiResponse(ResultCode.API_INVALID, "接口未开启", null);
+//            }
 
             //验证token;
             Parameter parameter = (Parameter) proceedingJoinPoint.getArgs()[0];
@@ -77,17 +77,17 @@ public class BaseAop {
                 return new ApiResponse(ResultCode.TOKEN_INVALID, "token无效或已过期，请重新登录", null);
             }
 
-            interfaceLog.setCallerCode(parameter.getCallerCode());
-            //验证权限
-            CallerInterface callerInterface = callerInterfaceService.findOneByCallerAndInterface(parameter.getCallerCode(), action.apiId());
-            if (StringUtils.isEmpty(callerInterface))
-            {
-                setInterfaceLog("权限不足，不能访问本接口，请联系管理员", ResultCode.PERMISSION_DENIED);
-                return new ApiResponse(ResultCode.PERMISSION_DENIED, "权限不足，不能访问本接口，请联系管理员", null);
-            }
+//            interfaceLog.setCallerCode(parameter.getCallerCode());
+//            //验证权限
+//            CallerInterface callerInterface = callerInterfaceService.findOneByCallerAndInterface(parameter.getCallerCode(), action.apiId());
+//            if (StringUtils.isEmpty(callerInterface))
+//            {
+//                setInterfaceLog("权限不足，不能访问本接口，请联系管理员", ResultCode.PERMISSION_DENIED);
+//                return new ApiResponse(ResultCode.PERMISSION_DENIED, "权限不足，不能访问本接口，请联系管理员", null);
+//            }
 
             //验证参数
-            List<String> errors = parameter.checkCode(action.isNeedElementCode());
+            List<String> errors = parameter.checkCode(action.isNeedLocation());
             if (errors.size() > 0)
             {
                 String errorMsg = String.join(",", errors);
@@ -119,10 +119,10 @@ public class BaseAop {
 
     @After("annotationPointCut()")
     public void after(){
-        interfaceLog.setRequestEndTime(TimeUtil.getCurrentTime());
+        /*interfaceLog.setRequestEndTime(TimeUtil.getCurrentTime());
         if (!StringUtils.isEmpty(interfaceLog.getCallerCode())) {
             interfaceLogService.insertOne(interfaceLog);
-        }
+        }*/
     }
 
     private ApiResponse getExceptionResult(String errorMsg){

@@ -15,8 +15,13 @@ import java.util.List;
 public class CheckParameter {
 
     private final ObjectMapper mapper = new ObjectMapper();
-
     public List<String> errors = new ArrayList<>();
+
+    public void checkInteger(Integer parameter, String parameterName){
+        if (StringUtils.isEmpty(parameter)){
+            errors.add(String.format("%s不能为空", parameterName));
+        }
+    }
 
     public Date checkTime(String timeStr, String parameterName){
         if (StringUtils.isEmpty(timeStr))

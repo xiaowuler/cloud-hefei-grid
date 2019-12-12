@@ -1,6 +1,5 @@
 package com.pingchuan.parameter.base;
 
-import com.alibaba.fastjson.annotation.JSONField;
 import com.pingchuan.parameter.CheckParameter;
 import com.pingchun.utils.SignUtil;
 import lombok.Data;
@@ -11,44 +10,44 @@ import java.util.List;
 
 @Data
 public class BaseParameter {
+
     protected String token;
 
-    protected String updateTime;
-
-    protected String startTime;
-
-    protected String forecastModel;
-
-    @JSONField(serialize = false)
-    protected Date updateDate;
-
-    @JSONField(serialize = false)
-    protected Date startDate;
-
-    @JSONField(serialize = false)
     protected String elementCode;
 
-    @JSONField(serialize = false)
-    public String callerCode;
+    protected String initialTime;
 
-    @JSONField(serialize = false)
-    protected boolean isNeedElementCode;
+    protected Date initialDate;
 
-    @JSONField(serialize = false)
+    protected String modeCode;
+
+    protected String orgCode;
+
+    protected String location;
+
+    protected List<double[]> locations;
+
+    protected Integer forecastInterval;
+
+    protected Integer forecastLevel;
+
+    protected String callerCode;
+
     protected CheckParameter check;
 
-    public List<String> checkCode(boolean isNeedElementCode){
-
-        this.isNeedElementCode = isNeedElementCode;
-
+    public List<String> checkCode(boolean isNeed){
         check = new CheckParameter();
-        startDate = check.checkTime(startTime, "startTime");
-        updateDate = check.checkTime(updateTime, "updateTime");
-        forecastModel = check.checkString(forecastModel, "forecastModel");
-        if (isNeedElementCode) {
-            elementCode = check.checkString(elementCode, "elementCode");
+        initialDate = check.checkTime(initialTime, "initialTime");
+        elementCode = check.checkString(elementCode, "elementCode");
+        modeCode = check.checkString(modeCode, "modeCode");
+        orgCode = check.checkString(orgCode, "orgCode");
+        check.checkInteger(forecastInterval, "forecastInterval");
+        check.checkInteger(forecastLevel, "forecastLevel");
+
+        if (isNeed) {
+            locations = check.checkLocation(location);
         }else {
-            elementCode = null;
+            locations = null;
         }
 
         return null;

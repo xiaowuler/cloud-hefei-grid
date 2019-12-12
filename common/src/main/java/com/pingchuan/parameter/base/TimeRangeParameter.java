@@ -6,10 +6,6 @@ import lombok.Data;
 import java.util.Date;
 import java.util.List;
 
-/**
- * @author xiaowuler
- */
-
 @Data
 public class TimeRangeParameter extends BaseParameter implements Parameter {
 
@@ -21,19 +17,12 @@ public class TimeRangeParameter extends BaseParameter implements Parameter {
 
     private Date endForecastDate;
 
-    private String location;
-
-    private List<double[]> locations;
-
     @Override
     public List<String> checkCode(boolean isNeed) {
-
         super.checkCode(isNeed);
 
-        locations = check.checkLocation(location);
         startForecastDate = check.checkTime(startForecastTime, "startForecastTime");
         endForecastDate = check.checkTime(endForecastTime, "endForecastTime");
-
         return check.errors;
     }
 
@@ -41,4 +30,5 @@ public class TimeRangeParameter extends BaseParameter implements Parameter {
     public String getAreaCode() {
         return null;
     }
+
 }

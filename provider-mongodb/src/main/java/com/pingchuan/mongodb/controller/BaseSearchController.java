@@ -1,56 +1,44 @@
 package com.pingchuan.mongodb.controller;
 
-import com.pingchuan.dto.base.AreaElement;
-import com.pingchuan.parameter.base.*;
+import com.pingchuan.dto.base.Element;
+import com.pingchuan.dto.base.forecast.ForecastElement;
 import com.pingchuan.mongodb.service.BaseSearchService;
+import com.pingchuan.parameter.base.ForecastParameter;
+import com.pingchuan.parameter.base.TimeEffectParameter;
+import com.pingchuan.parameter.base.TimeRangeParameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
 
-@RequestMapping("baseSearch")
 @RestController
+@RequestMapping("baseSearch")
 public class BaseSearchController {
 
     @Autowired
     private BaseSearchService baseSearchService;
 
-    @PostMapping("/findNJGridsByArea")
-    public List<AreaElement> findNJGridsByArea(@RequestBody AreaParameter areaParameter){
-        return baseSearchService.findNJGridsByArea(areaParameter);
+    @PostMapping("/findPointValue")
+    public List<Element> findPointValue(@RequestBody TimeEffectParameter timeEffectParameter){
+        return baseSearchService.findPointValue(timeEffectParameter);
     }
 
-    @PostMapping("/findNJGridsByLocation")
-    public List<AreaElement> findNJGridsByLocation(@RequestBody LocationParameter locationParameter){
-        return baseSearchService.findNJGridsByLocation(locationParameter);
+    @PostMapping("/findLineValues")
+    public List<Element> findLineValues(@RequestBody TimeRangeParameter timeRangeParameter){
+        return baseSearchService.findLineValues(timeRangeParameter);
     }
 
-    @PostMapping("/findNJGridsByForecastTimeRange")
-    public List<AreaElement> findNJGridsByForecastTimeRange(@RequestBody TimeRangeParameter timeRangeParameter){
-        return baseSearchService.findNJGridsByForecastTimeRange(timeRangeParameter);
+    @PostMapping(value = "/findRegionValues")
+    public List<Element> findRegionValues(@RequestBody TimeEffectParameter timeEffectParameter){
+        return baseSearchService.findRegionValues(timeEffectParameter);
     }
 
-    @PostMapping("/findNJGridsByTimeEffect")
-    public List<AreaElement> findNJGridsByTimeEffect(@RequestBody TimeEffectParameter timeEffectParameter){
-        return baseSearchService.findNJGridsByTimeEffect(timeEffectParameter);
+    @PostMapping(value = "/findWeatherForecast")
+    public List<ForecastElement> findWeatherForecast(@RequestBody ForecastParameter forecastParameter){
+        return baseSearchService.findWeatherForecast(forecastParameter);
     }
 
-    @PostMapping("/findNJGridsByElementThresholdArea")
-    public List<AreaElement> findNJGridsByElementThresholdArea(@RequestBody ThresholdAreaParameter thresholdAreaParameter){
-        return baseSearchService.findNJGridsByElementThresholdArea(thresholdAreaParameter);
-    }
-
-    @PostMapping("/findNJGridsByElementThresholdLocation")
-    public List<AreaElement> findNJGridsByElementThresholdLocation(@RequestBody ThresholdLocationParameter thresholdLocationParameter){
-        return baseSearchService.findNJGridsByElementThresholdLocation(thresholdLocationParameter);
-    }
-
-    @PostMapping("/findNJGridsByNonArea")
-    public List<AreaElement> findNJGridsByNonArea(@RequestBody AreaParameter areaParameter){
-        return baseSearchService.findNJGridsByNonArea(areaParameter);
-    }
 }
