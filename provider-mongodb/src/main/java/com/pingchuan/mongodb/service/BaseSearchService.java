@@ -16,4 +16,6 @@ public interface BaseSearchService {
     List<Element> findRegionValues(TimeEffectParameter timeEffectParameter);
 
     List<ForecastElement> findWeatherForecast(ForecastParameter forecastParameter);
+
+    List<ForecastElement> findWeatherForecastByNewest(ForecastParameter forecastParameter);
 }

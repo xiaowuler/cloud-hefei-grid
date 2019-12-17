@@ -41,4 +41,9 @@ public class BaseSearchController {
         return baseSearchService.findWeatherForecast(forecastParameter);
     }
 
+    @PostMapping(value = "/findWeatherForecastByNewest")
+    public List<ForecastElement> findWeatherForecastByNewest(@RequestBody ForecastParameter forecastParameter){
+        return baseSearchService.findWeatherForecastByNewest(forecastParameter);
+    }
+
 }

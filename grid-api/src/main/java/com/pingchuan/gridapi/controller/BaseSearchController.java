@@ -58,4 +58,14 @@ public class BaseSearchController {
         return new ApiResponse(ResultCode.SUCCESS, "查询成功", elements.get(0));
     }
 
+    @RequestMapping("/findWeatherForecastByNewest")
+    @BaseAction(apiId = 5, isNeedLocation = true)
+    public ApiResponse findWeatherForecastByNewest(ForecastParameter forecastParameter){
+        List<ForecastElement> forecastElements = baseSearchService.findWeatherForecastByNewest(forecastParameter);
+        if (forecastElements.size() == 0) {
+            return new ApiResponse(ResultCode.NULL_VALUE, "未查询到值", null);
+        }
+        return new ApiResponse(ResultCode.SUCCESS, "查询成功", forecastElements);
+    }
+
 }

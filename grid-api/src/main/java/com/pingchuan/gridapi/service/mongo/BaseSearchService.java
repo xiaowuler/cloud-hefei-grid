@@ -23,4 +23,7 @@ public interface BaseSearchService {
 
     @RequestMapping(value = "/baseSearch/findWeatherForecast", method = RequestMethod.POST)
     List<ForecastElement> findWeatherForecast(ForecastParameter forecastParameter);
+
+    @RequestMapping(value = "/baseSearch/findWeatherForecastByNewest", method = RequestMethod.POST)
+    List<ForecastElement> findWeatherForecastByNewest(ForecastParameter forecastParameter);
 }

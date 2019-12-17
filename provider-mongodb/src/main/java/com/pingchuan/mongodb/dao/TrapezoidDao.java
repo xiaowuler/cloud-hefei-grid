@@ -1,6 +1,7 @@
 package com.pingchuan.mongodb.dao;
 
 import com.pingchuan.model.Trapezoid;
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
 
 import java.util.Date;
@@ -23,4 +24,6 @@ public interface TrapezoidDao {
     List<AggregationOperation> findLocationIdByElementInfo(List<double[]> locations, String elementCode, Date initialDate, String modeCode, String orgCode, Integer forecastInterval, Integer forecastLevel);
 
     List<AggregationOperation> findByLocation(List<double[]> locations, String trapezoidInfoId);
+
+    List<ObjectId> findAllTrapezoidIdByLocation(List<double[]> locations);
 }

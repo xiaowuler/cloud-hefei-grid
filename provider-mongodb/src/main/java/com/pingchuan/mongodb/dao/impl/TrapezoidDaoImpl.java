@@ -156,7 +156,7 @@ public class TrapezoidDaoImpl implements TrapezoidDao {
         return aggregationOperations;
     }
 
-    private List<ObjectId> findAllTrapezoidIdByLocation(List<double[]> locations){
+    public List<ObjectId> findAllTrapezoidIdByLocation(List<double[]> locations){
         List<ObjectId> trapezoidIds = new ArrayList<>();
         for (double[] loc : locations) {
             if (StringUtils.isEmpty(loc)) {

@@ -47,6 +47,9 @@ public class BaseSearchServiceImpl implements BaseSearchService {
     @Autowired
     private BaseSearchDao baseSearchDao;
 
+    @Autowired
+    private ForecastDao forecastDao;
+
     @Override
     public List<Element> findPointValue(TimeEffectParameter timeEffectParameter) {
         List<AggregationOperation> elementInfos = elementInfoDao.findOne(timeEffectParameter.getElementCode(), timeEffectParameter.getInitialDate(), timeEffectParameter.getModeCode(), timeEffectParameter.getOrgCode(), timeEffectParameter.getForecastInterval(), timeEffectParameter.getForecastLevel());
@@ -104,6 +107,12 @@ public class BaseSearchServiceImpl implements BaseSearchService {
         return calcWeatherPhenomena(weatherElements);
     }
 
+    @Override
+    public List<ForecastElement> findWeatherForecastByNewest(ForecastParameter forecastParameter) {
+
+        return forecastDao.findOneWeekByLocation(forecastParameter.getLocations());
+    }
+
     private List<ForecastElement> calcWeatherPhenomena(List<WeatherElement> elements){
 
         WeatherDecodeLib weatherDecodeLib = new WeatherDecodeLib();
@@ -125,7 +134,7 @@ public class BaseSearchServiceImpl implements BaseSearchService {
                 List<Forecast> forecast = weatherElement.getForecasts().stream().filter(w -> w.getForecastTime().compareTo(finalTime) != -1 && w.getForecastTime().compareTo(finalEndDateTime) == -1).collect(Collectors.toList());
                 if (index == 0 || index == 1 || index % 2 == 0){
                     Day day = new Day();
-                    day.setDate(TimeUtil.CovertDateToString("yyyy-MM-dd", time));
+                    day.setDate(time);
                     days.add(calcHalfDay(forecast, weatherDecodeLib, weatherPhenomenas, day));
                     index += 2;
                 }else {
