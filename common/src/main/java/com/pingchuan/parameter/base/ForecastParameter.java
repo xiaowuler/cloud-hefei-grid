@@ -24,6 +24,10 @@ public class ForecastParameter implements Parameter {
 
     private List<double[]> locations;
 
+    private String station;
+
+    private List<String> stations;
+
     private String initialTime;
 
     private Date initialDate;
@@ -36,7 +40,12 @@ public class ForecastParameter implements Parameter {
     public List<String> checkCode(boolean isNeed) {
         CheckParameter checkParameter = new CheckParameter();
 
-        locations = checkParameter.checkLocation(location);
+        if (!StringUtils.isEmpty(location)) {
+            locations = checkParameter.checkLocation(location);
+        }else {
+            stations = checkParameter.checkStation(station);
+        }
+
         if (!StringUtils.isEmpty(initialTime)){
             initialDate = checkParameter.checkTime(initialTime, "initialTime");
         }

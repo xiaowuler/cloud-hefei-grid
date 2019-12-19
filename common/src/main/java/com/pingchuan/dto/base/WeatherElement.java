@@ -19,5 +19,7 @@ public class WeatherElement {
 
     private double[] loc;
 
+    private String stationCode;
+
     private List<Forecast> forecasts;
 }

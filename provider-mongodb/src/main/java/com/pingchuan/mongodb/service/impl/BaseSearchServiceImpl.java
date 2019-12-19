@@ -10,6 +10,7 @@ import com.pingchuan.dto.base.forecast.Detail;
 import com.pingchuan.dto.base.forecast.ForecastElement;
 import com.pingchuan.dto.base.forecast.Hour;
 import com.pingchuan.model.ElementInfo;
+import com.pingchuan.model.Station;
 import com.pingchuan.parameter.base.*;
 import com.pingchuan.mongodb.dao.*;
 import com.pingchuan.mongodb.service.BaseSearchService;
@@ -50,6 +51,9 @@ public class BaseSearchServiceImpl implements BaseSearchService {
     @Autowired
     private ForecastDao forecastDao;
 
+    @Autowired
+    private StationDao stationDao;
+
     @Override
     public List<Element> findPointValue(TimeEffectParameter timeEffectParameter) {
         List<AggregationOperation> elementInfos = elementInfoDao.findOne(timeEffectParameter.getElementCode(), timeEffectParameter.getInitialDate(), timeEffectParameter.getModeCode(), timeEffectParameter.getOrgCode(), timeEffectParameter.getForecastInterval(), timeEffectParameter.getForecastLevel());
@@ -84,6 +88,13 @@ public class BaseSearchServiceImpl implements BaseSearchService {
 
     @Override
     public List<ForecastElement> findWeatherForecast(ForecastParameter forecastParameter) {
+        List<Station> stations = new ArrayList<>();
+        if (forecastParameter.getStations() != null){
+            stations = stationDao.getAllByStations(forecastParameter.getStations());
+            List<double[]> locations = stations.stream().map(l -> l.getLoc()).collect(Collectors.toList());
+            forecastParameter.setLocations(locations);
+        }
+
         List<ElementInfo> elementInfos = getInitialTime(forecastParameter.getInitialDate());
         if (elementInfos.size() < 7)
             return new ArrayList<>();
@@ -104,13 +115,39 @@ public class BaseSearchServiceImpl implements BaseSearchService {
         elementInfo.addAll(forecastInfos);
         elementInfo.addAll(elementValues);
         List<WeatherElement> weatherElements = baseSearchDao.findWeatherForecast(elementInfo);
+        weatherElements = setStation(weatherElements, stations);
         return calcWeatherPhenomena(weatherElements);
+    }
+
+    private List<WeatherElement> setStation(List<WeatherElement> weatherElements, List<Station> stations){
+        if (stations.size() == 0){
+            return weatherElements;
+        }
+
+        List<WeatherElement> newWeather = new ArrayList<>();
+        for(Station station : stations){
+            for(int x = 0; x < weatherElements.size(); x++){
+                if (!StringUtils.isEmpty(weatherElements.get(x).getStationCode())){
+                    continue;
+                }
+
+                double[] loc = weatherElements.get(x).getLoc();
+                double[] stationLoc = station.getLoc();
+                if (loc[0] >= (stationLoc[0] - 0.025) && loc[0] <= (stationLoc[0] + 0.025) && loc[1] >= (stationLoc[1] - 0.025) && loc[1] <= (stationLoc[1] + 0.025)){
+                    WeatherElement weatherElement = weatherElements.get(x);
+                    weatherElement.setStationCode(station.getId());
+                    newWeather.add(weatherElement);
+                }
+            }
+        }
+
+        return newWeather;
     }
 
     @Override
     public List<ForecastElement> findWeatherForecastByNewest(ForecastParameter forecastParameter) {
-
-        return forecastDao.findOneWeekByLocation(forecastParameter.getLocations());
+        List<ForecastElement> forecastElements = forecastDao.findOneWeekByLocation(forecastParameter.getLocations());
+        return forecastElements;
     }
 
     private List<ForecastElement> calcWeatherPhenomena(List<WeatherElement> elements){
@@ -122,31 +159,31 @@ public class BaseSearchServiceImpl implements BaseSearchService {
             Date startTime = weatherElement.getInitialTime();
             Date endTime = TimeUtil.addDay(startTime, 7);
             Date endDateTime;
-            int hour = startTime.getHours();
 
             List<Day> days = new ArrayList<>();
-
-            int index = hour >= 8 || hour < 20 ? 0 : 1;
+            int index = 0;
             for (Date time = startTime; endTime.compareTo(time) == 1; time = endDateTime){
                 endDateTime = TimeUtil.addHour(time, 12);
                 Date finalTime = time;
                 Date finalEndDateTime = endDateTime;
-                List<Forecast> forecast = weatherElement.getForecasts().stream().filter(w -> w.getForecastTime().compareTo(finalTime) != -1 && w.getForecastTime().compareTo(finalEndDateTime) == -1).collect(Collectors.toList());
+                List<Forecast> forecast = weatherElement.getForecasts().stream().filter(w -> w.getForecastTime().compareTo(finalTime) == 1 && w.getForecastTime().compareTo(finalEndDateTime) != 1).collect(Collectors.toList());
                 if (index == 0 || index == 1 || index % 2 == 0){
                     Day day = new Day();
-                    day.setDate(time);
-                    days.add(calcHalfDay(forecast, weatherDecodeLib, weatherPhenomenas, day));
+                    //day.setDate(time);
+                    days.add(calcHalfDay(forecast, weatherDecodeLib, weatherPhenomenas, day, index));
                     index += 2;
                 }else {
                     Day day = days.get(days.size() - 1);
                     days.remove(day);
-                    days.add(calcHalfDay(forecast, weatherDecodeLib, weatherPhenomenas, day));
+                    days.add(calcHalfDay(forecast, weatherDecodeLib, weatherPhenomenas, day, index));
                 }
                 index ++;
             }
 
             ForecastElement forecastElement = new ForecastElement();
             forecastElement.setDays(days);
+            forecastElement.setStationCode(weatherElement.getStationCode());
+            forecastElement.setInitialTime(weatherElement.getInitialTime());
             forecastElement.setLoc(weatherElement.getLoc());
             forecastElements.add(forecastElement);
         }
@@ -154,7 +191,7 @@ public class BaseSearchServiceImpl implements BaseSearchService {
         return forecastElements;
     }
 
-    private Day calcHalfDay(List<Forecast> forecasts, WeatherDecodeLib weatherDecodeLib, WeatherPhenomenon[] weatherPhenomenas, Day day){
+    private Day calcHalfDay(List<Forecast> forecasts, WeatherDecodeLib weatherDecodeLib, WeatherPhenomenon[] weatherPhenomenas, Day day, int index){
         List<Double> er03 = new ArrayList<>();
         List<Double> ect = new ArrayList<>();
         List<Double> pph = new ArrayList<>();
@@ -204,8 +241,8 @@ public class BaseSearchServiceImpl implements BaseSearchService {
 
         detail.setWea(weatherDecodeLib.getWeatherElement(weatherPhenomenas, er03, pph, ect));
         if (forecasts.size() > 0){
-            int hour = forecasts.get(0).getForecastTime().getHours();
-            if (hour >= 8 && hour < 20){
+            //int hour = forecasts.get(0).getForecastTime().getHours();
+            if (index % 2 == 0){
                 day.setPrev12Hours(detail);
             }else {
                 day.setNext12Hours(detail);

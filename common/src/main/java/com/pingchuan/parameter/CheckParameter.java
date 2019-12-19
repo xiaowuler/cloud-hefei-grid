@@ -135,4 +135,22 @@ public class CheckParameter {
         calendar.add(Calendar.HOUR_OF_DAY, timeEffect);
         return calendar.getTime();
     }
+
+    public List<String> checkStation(String station) {
+
+        if (StringUtils.isEmpty(station))
+        {
+            errors.add("station 和 loction 不能同时为空");
+            return null;
+        }
+
+        try{
+            return mapper.readValue(station, new TypeReference<List<String>>(){});
+        }catch (Exception e){
+            errors.add("threshold 格式不正确，格式应为'[station1,...,station1]'");
+        }
+
+        return null;
+
+    }
 }
