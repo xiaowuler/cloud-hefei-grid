@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pingchuan.providermysql.mapper.UserMapper">
+
+    <select id="findAll" resultType="com.pingchuan.domain.User">
+        select * from users;
+    </select>
+
+    <insert id="insert">
+        INSERT INTO users(`name`,`password`, `enabled`)VALUES(#{user.name},#{user.passWord},#{user.enabled})
+    </insert>
+
+    <delete id="deleteById">
+        delete from users where `id`=#{id};
+    </delete>
+
+    <update id="updateById" parameterType="com.pingchuan.domain.User">
+        UPDATE users
+        <set>
+            <if test="user.name != null"> `name` = #{user.name}, </if>
+            <if test="user.passWord != null"> `password` = #{user.passWord}, </if>
+            <if test="user.enabled != null"> `enabled` = #{user.enabled}, </if>
+        </set>
+        where `id`=#{user.id}
+    </update>
+
+</mapper>

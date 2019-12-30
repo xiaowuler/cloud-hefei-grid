@@ -12,6 +12,7 @@
         <module name="provider-mysql" />
         <module name="util" />
         <module name="provider-mongodb" />
+        <module name="service-weather" />
         <module name="grid-api" />
       </profile>
     </annotationProcessing>
@@ -28,6 +29,7 @@
       <module name="nanjing-grid" options="-parameters" />
       <module name="provider-mongodb" options="-parameters" />
       <module name="provider-mysql" options="-parameters" />
+      <module name="service-weather" options="-parameters" />
       <module name="util" options="" />
       <module name="weather-service" options="-parameters" />
     </option>

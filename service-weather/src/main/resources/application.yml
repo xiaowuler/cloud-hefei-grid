@@ -1,0 +1,21 @@
+server:
+  port: 8005
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8001/eureka/
+    register-with-eureka: false
+
+ribbon:
+  ReadTimeout: 600000
+  ConnectTimeout: 600000
+  MaxAutoRetries: 0
+  MaxAutoRetriesNextServer: 1
+
+spring:
+  application:
+    name: service-weather
+  main:
+    allow-bean-definition-overriding: true
+
