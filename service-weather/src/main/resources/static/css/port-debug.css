@@ -1,0 +1,312 @@
+.content{
+    width: calc(100% - 824px) !important;
+    margin: 10px 0 0 314px;
+}
+
+.port-title{
+    line-height: 56px;
+    border-bottom: 1px solid #3b3d51;
+}
+
+.port-instruct{
+    margin-bottom: 10px;
+    padding: 0 10px;
+}
+
+.port-instruct p{
+    padding: 10px 0;
+    text-indent: 32px;
+    line-height: 27px;
+    text-align: justify;
+    word-break: break-all;
+}
+
+.port-param {
+    padding: 0 10px 10px 10px;
+}
+
+.port-param table{
+    width: 100%;
+}
+
+.port-des{
+    margin-top: 10px;
+    position: relative;
+}
+
+.port-des .port-label{
+    width: 150px;
+    float: left;
+    margin-right: 2px;
+    display: block;
+    line-height: 36px;
+    text-align: center;
+    position: relative;
+    background: #2f3144;
+}
+
+.port-des div.port-name{
+    width: 225px;
+    text-align: right;
+    padding-right: 50px;
+}
+
+.port-des div.port-type{
+    width: 90px;
+    margin-right: 10px;
+}
+
+.port-des div.port-value{
+    width: 180px;
+    margin-right: 10px;
+    background: #3b3d54;
+}
+
+.port-des .port-menu{
+    width: 100%;
+    position: absolute;
+    top: 36px;
+    left: 0;
+    z-index: 10;
+    background: #35374c;
+}
+
+.port-des div.port-value .combo-arrow{
+    background: url("../images/drop-down.png") no-repeat 8px center;
+}
+
+.port-des div.port-explain{
+    width: 50px;
+}
+
+.port-des div.explain-txt{
+    width: calc(100% - 469px);
+    margin-right: 0;
+    padding-left: 10px;
+    text-align: left;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.port-des div.explain-txt input{
+    text-align: left;
+    padding-left: 10px;
+}
+
+.port-param table tr:nth-of-type(even){
+    background: #2f3144;
+}
+
+.port-des input{
+    width: calc(100% - 10px);
+    height: 36px;
+    margin: 0 auto;
+    display: block;
+    text-align: center;
+    color: #dbdbdb;
+    font-size: 16px;
+    background: transparent;
+}
+
+.port-call{
+    margin: 10px 0;
+    padding: 10px;
+}
+
+.port-call span{
+    margin-right: 10px;
+    line-height: 36px;
+    float: left;
+}
+
+.port-method{
+    margin-right: 10px;
+    border: 1px solid #63657e;
+    border-left: 0;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    background: #53556c;
+}
+
+.port-method button{
+    width: 75px;
+    height: 34px;
+    float: left;
+    color: #9e9e9e;
+    background: transparent;
+    border-left: 1px solid #63657e;
+}
+
+.port-method button.post-btn{
+    border-right: 1px solid #3f4153;
+}
+
+.port-method button.active{
+    color: #ffffff;
+}
+
+.run-btn{
+    width: 64px;
+    height: 36px;
+    color: #ffffff;
+    background: #59bbd9;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+
+.right-panel{
+    width: 500px;
+    /*height: 100%;*/
+    position: absolute;
+    top: 70px;
+    right: 0;
+}
+
+.port-return h2{
+    padding: 0 10px;
+    line-height: 55px;
+}
+
+.port-text{
+    display: none;
+}
+
+.return-title{
+    border-bottom: 1px solid #3b3d51;
+}
+
+.return-title ul{
+    height: 32px;
+    line-height: 32px;
+    padding-left: 10px;
+}
+
+.return-title ul li{
+    width: 80px;
+    height: 32px;
+    text-align: center;
+    position: relative;
+    cursor: pointer;
+    float: left;
+    color: #9e9e9e;
+}
+
+.return-title ul li.active{
+    color: #ffffff;
+    border-left: 1px solid #3b3d51;
+    border-right: 1px solid #3b3d51;
+    background: #2f3144;
+}
+
+.return-title ul li.active:before{
+    content: '';
+    width: 100%;
+    height: 2px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    -webkit-border-radius: 3px 3px 0 0;
+    -moz-border-radius: 3px 3px 0 0;
+    border-radius: 3px 3px 0 0;
+    background: #59bbd9;
+}
+
+.return-title ul li.active:after{
+    content: '';
+    width: 100%;
+    height: 1px;
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    background: #2f3144;
+}
+
+.return-content li{
+    padding: 5px 0 0 10px;
+    display: none;
+}
+
+.return-content .describe{
+    overflow-y: auto;
+}
+
+.return-content .chart{
+    height: 300px!important;
+}
+
+.textbox{
+    height: 32px;
+    width: 170px!important;
+    margin: 0 auto;
+    top: -2px;
+}
+
+.textbox-addon,
+.datebox .combo-arrow,
+.spinner-button-updown{
+    height: 30px!important;
+}
+
+.datebox .combo-arrow {
+    background: url('../images/calendar.png') no-repeat 5px center;
+}
+
+.textbox .textbox-text{
+    color: #ffffff;
+    background: transparent;
+}
+
+#_easyui_textbox_input1{
+    color: #ffffff;
+    background: transparent;
+}
+
+.textbox .textbox-text{
+    height: 30px!important;
+    line-height: 30px!important;
+}
+
+.combo-panel{
+    background: #ffffff;
+}
+
+.combo-panel .textbox {
+    width: 100% !important;
+    border: 1px solid #95B8E7;
+    background: #ffffff;
+}
+
+.combo-panel .textbox .textbox-text{
+    color: #000000;
+    border-right: 0;
+}
+
+.combobox-item,
+.tree li{
+    color: #ffffff;
+    background: #35374c;
+}
+
+.tree-node{
+    height: 34px;
+    line-height: 34px;
+}
+
+.tree li{
+    border-bottom: 1px solid #53556c;
+}
+
+.tree li:last-child{
+    border-bottom: 0;
+}
+
+.tree-node-selected{
+    background: none;
+    color: #dbdbdb;
+}
+.tree-folder-open+span{
+    font-weight: bold;
+}

@@ -2,10 +2,18 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.pingchuan.providermysql.mapper.InterfaceMapper">
 
-    <select id="findOneById" resultType="com.pingchuan.domain.Interface">
+    <select id = "findOneById" resultType = "com.pingchuan.domain.Interface">
         SELECT id, `name`, type_id typeId, `explain`,enabled FROM interfaces WHERE id = #{id};
     </select>
-    <select id="findAll" resultType="com.pingchuan.domain.Interface">
-        SELECT id, `name`, type_id typeId, `explain`,enabled FROM interfaces
+
+    <select id = "findAll" resultType = "com.pingchuan.domain.Interface">
+        SELECT id, `name`, type_id typeId, `explain`, enabled FROM interfaces
+    </select>
+
+    <select id="findInterfacesByRequestTime" resultType="com.pingchuan.dto.web.InterfaceDTO">
+        select i.id, i.`explain`, l.state, l.execute_start_time executeStartTime, l.execute_end_time executeEndTime, l.request_start_time requestStartTime, l.request_end_time requestEndTime
+        from interfaces i
+        left join interface_logs l on i.id = l.interface_id
+        where l.request_start_time &gt;= #{requestStartTime} and l.request_end_time &lt;= #{requestEndTime}
     </select>
 </mapper>

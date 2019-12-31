@@ -1,13 +1,13 @@
 package com.pingchuan.weather.controller;
 
+import java.util.List;
 import com.pingchuan.domain.Config;
 import com.pingchuan.weather.service.ConfigService;
+import org.springframework.web.bind.annotation.RequestMethod;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("config")

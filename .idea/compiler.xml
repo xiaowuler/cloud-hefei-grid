@@ -17,6 +17,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="cloud-hefei-grid" target="1.8" />
       <module name="weather-service" target="1.8" />
     </bytecodeTargetLevel>
   </component>
