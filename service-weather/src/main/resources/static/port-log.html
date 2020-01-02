@@ -44,10 +44,8 @@
                     <li class="level-second-menu icon-debug"><a href="ModeCode.html">获取基础信息</a></li>
                     <li class="level-second-menu icon-debug"><a href="PointValue.html">获取点数据</a></li>
                     <li class="level-second-menu icon-debug"><a href="LineValues.html">获取线数据</a></li>
-                    <!-- <li class="level-second-menu icon-debug"><a href="LineColumnValues.html">LineValues（BarChart）</a></li>-->
                     <li class="level-second-menu icon-debug"><a href="RegionValues.html">获取面数据</a></li>
                     <li class="level-second-menu icon-debug"><a href="box-diagram.html">集合预报须图</a></li>
-                    <!-- <li class="level-second-menu icon-debug"><a href="RegionArray.html">RegionValuesToArray</a></li>-->
                     <li class="level-second-menu icon-debug"><a href="dispersion-degree.html">集合预报离散度</a></li>
                     <li class="level-second-menu icon-debug"><a href="WeatherPhenomenon.html">天气现象</a></li>
                 </ul>
@@ -60,11 +58,11 @@
             <div class="toolbar clearfix">
                 <div class="toolbar-name toolbar-mr textbox-width fl">
                     <span class="toolbar-title">名称</span>
-                    <select class="easyui-combobox" id="name" name="name" labelPosition="top" editable="false"></select>
+                    <select class="easyui-combobox" id="name" data-options = "panelHeight: 'auto', panelMaxHeight: 200"></select>
                 </div>
                 <div class="toolbar-caller toolbar-mr fl">
                     <span class="toolbar-title">调用者</span>
-                    <select class="easyui-combobox" id="caller" name="caller" labelPosition="top" editable="false"></select>
+                    <select class="easyui-combobox" id="caller" data-options = "panelHeight: 'auto', panelMaxHeight: 200"></select>
                 </div>
                 <div class="toolbar-time toolbar-mr fl">
                     <span class="toolbar-title fl">起止时间</span>
@@ -75,9 +73,9 @@
                 <div class="toolbar-state toolbar-mr textbox-width fl">
                     <span class="toolbar-title">状态</span>
                     <select class="easyui-combobox" id="state" name="name" labelPosition="top" editable="false">
-                        <option value="全部">全部</option>
-                        <option value="成功">成功</option>
-                        <option value="失败">失败</option>
+                        <option value = "-1">全部</option>
+                        <option value = "1">成功</option>
+                        <option value = "0">失败</option>
                     </select>
                 </div>
                 <button id="query-btn" class="query">查询</button>

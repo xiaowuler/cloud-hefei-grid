@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.pingchuan.providermysql.mapper.CallerMapper">
-
     <select id="findOneByUsernameAndPassword" resultType="com.pingchuan.domain.Caller">
         SELECT code, department, login_name loginName, login_password loginPassword, role, `enabled`, real_name realName FROM callers WHERE login_name = #{username} and login_password = #{password} and `enabled` = 1
     </select>
 
+    <select id = "findDepartment" resultType = "com.pingchuan.domain.Caller">
+        select distinct(department) from callers
+    </select>
 </mapper>

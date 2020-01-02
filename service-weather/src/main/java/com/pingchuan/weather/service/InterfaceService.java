@@ -1,6 +1,7 @@
 package com.pingchuan.weather.service;
 
 import java.util.List;
+import com.pingchuan.domain.Interface;
 import com.pingchuan.dto.web.InterfaceAnalysisRateDTO;
 
 import org.springframework.cloud.openfeign.FeignClient;
@@ -10,4 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 public interface InterfaceService {
     @PostMapping(value = "interface/getInterfaceBaseInfo")
     List<InterfaceAnalysisRateDTO> getInterfaceBaseInfo();
+
+    @PostMapping(value = "interface/findAll")
+    List<Interface> getInterfaces();
 }

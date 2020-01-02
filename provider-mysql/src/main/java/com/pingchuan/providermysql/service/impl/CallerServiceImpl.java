@@ -1,10 +1,12 @@
 package com.pingchuan.providermysql.service.impl;
 
+import java.util.List;
 import com.pingchuan.domain.Caller;
 import com.pingchuan.providermysql.mapper.CallerMapper;
 import com.pingchuan.providermysql.service.CallerService;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -17,5 +19,10 @@ public class CallerServiceImpl implements CallerService {
     @Override
     public Caller findOneByUsernameAndPassword(String username, String password) {
         return callerMapper.findOneByUsernameAndPassword(username, password);
+    }
+
+    @Override
+    public List<Caller> findDepartment() {
+        return callerMapper.findDepartment();
     }
 }

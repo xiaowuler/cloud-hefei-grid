@@ -1,9 +1,35 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.pingchuan.providermysql.mapper.InterfaceLogMapper">
-    
     <insert id="insertOne">
         insert into interface_logs values (null, #{interfaceLog.interfaceId}, #{interfaceLog.parameters}, #{interfaceLog.state}, #{interfaceLog.callerCode}, #{interfaceLog.errorMessage}, #{interfaceLog.requestStartTime}, #{interfaceLog.executeStartTime}, #{interfaceLog.executeEndTime}, #{interfaceLog.requestEndTime}, #{interfaceLog.requestType}, #{interfaceLog.hostAddress}, #{interfaceLog.regionCode}, #{interfaceLog.resultCode})
     </insert>
 
+    <select id = "findTotalCount" resultType = "java.lang.Integer">
+        select count(*)
+        from interface_logs l
+        left join interfaces i on l.interface_id = i.id
+        left join callers c on l.caller_code = c.`code`
+        left join states s on l.state = s.id
+        where ('all' = #{interfaceName} or i.`name` = #{interfaceName})
+        and ('all' = #{department} or c.department = #{department})
+        and l.request_start_time &gt;= #{requestStartTime}
+        and l.request_end_time &lt;= #{requestEndTime}
+        and ('all' = #{state} or l.state = #{state})
+    </select>
+
+    <select id = "findAllByPage" resultType = "com.pingchuan.dto.web.InterfaceLogDTO">
+        select i.`name`, s.state, c.department, l.execute_start_time executeStartTime, l.execute_end_time executeEndTime, (l.execute_end_time - l.execute_start_time)elapsedTime
+        from interface_logs l
+        left join callers c on l.caller_code = c.`code`
+        left join interfaces i on l.interface_id = i.id
+        left join states s on l.state = s.id
+        where ('all' = #{interfaceName} or i.`name` = #{interfaceName} )
+        and ('all' = #{department} or c.department = #{department})
+        and l.request_start_time &gt;= #{requestStartTime}
+        and l.request_end_time &lt;= #{requestEndTime}
+        and ('all' = #{state} or l.state = #{state})
+        order by l.request_start_time desc
+        limit #{pagination}, #{pageSize};
+    </select>
 </mapper>

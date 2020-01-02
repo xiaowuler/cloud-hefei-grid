@@ -1,6 +1,7 @@
 package com.pingchuan.weather.controller;
 
 import java.util.List;
+import com.pingchuan.domain.Interface;
 import com.pingchuan.dto.web.InterfaceAnalysisRateDTO;
 import com.pingchuan.weather.service.InterfaceService;
 
@@ -19,5 +20,10 @@ public class InterfaceController {
     @PostMapping("getInterfaceBaseInfo")
     public List<InterfaceAnalysisRateDTO> getInterfaceBaseInfo(){
         return interfaceService.getInterfaceBaseInfo();
+    }
+
+    @PostMapping("getInterfaces")
+    public List<Interface> getInterfaces(){
+        return interfaceService.getInterfaces();
     }
 }

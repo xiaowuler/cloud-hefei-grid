@@ -1,8 +1,8 @@
-package com.pingchuan.providermysql.controller;
+package com.pingchuan.weather.controller;
 
 import java.util.List;
 import com.pingchuan.domain.Caller;
-import com.pingchuan.providermysql.service.CallerService;
+import com.pingchuan.weather.service.CallerService;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +15,6 @@ public class CallerController {
 
     @Autowired
     private CallerService callerService;
-
-    @PostMapping("/findOneByUsernameAndPassword")
-    public Caller findOneByUsernameAndPassword(String username, String password){
-        return callerService.findOneByUsernameAndPassword(username, password);
-    }
 
     @PostMapping("findDepartment")
     public List<Caller> findDepartment(){

@@ -2,13 +2,12 @@ var App = function () {
 
     this.Startup = function () {
         this.ReLayout();
-        this.CalendarControl();
-        this.ReloadPortTable();
-        this.SetSelectPanel();
-        this.ReLoadPortComboBoxData();
+        this.ReLoadInterfaceComboBoxData();
         this.ReLoadCallerComboBoxData();
-        $('#query-btn').on('click', this.OnQueryButtonClick.bind(this));
+        this.InitCalendar();
+        this.ReloadPortTable();
 
+        $('#query-btn').on('click', this.OnQueryButtonClick.bind(this));
         $('#query-btn').trigger("click");
         window.onresize = this.ReLayout.bind(this);
     };
@@ -22,67 +21,72 @@ var App = function () {
         $('.log-table,.datagrid-wrap').height(windowHeight - 475);
     };
 
-    this.ReLoadPortComboBoxData = function () {
-        $('#name').combobox({
-            url:"log/findAllCheckInfo",
-            valueField:'name',
-            textField:'name',
-            onLoadSuccess: function (data) {
-                console.log(data);
-                var item = $('#name').combobox('getData');
-                if (item.length > 0) {
-                    $('#name').combobox('select',data[0].name);
-                }
-            }
+    this.ReLoadInterfaceComboBoxData = function () {
+        var interfaces = $('#name');
+        $.ajax({
+            type: 'post',
+            url: '/interface/getInterfaces',
+            dataType: 'json',
+            async: false,
+            success: function (data) {
+                data.unshift({"name": "全部" });
+                interfaces .combobox({
+                    valueField: 'name',
+                    textField: 'name',
+                    data: data,
+                    onLoadSuccess: function (result) {
+                        var item = interfaces .combobox('getData');
+                        if (item.length > 0) {
+                            interfaces .combobox('select', result[0].name);
+                            interfaces .combobox('setValue', result[0].name);
+                        }
+                    }
+                });
+            }.bind(this)
         });
     };
 
     this.ReLoadCallerComboBoxData = function () {
-        $('#caller').combobox({
-            panelHeight: 'auto',
-            url:"caller/findAllByEnable",
-            valueField:'code',
-            textField:'name',
-            onLoadSuccess: function (data) {
-                console.log(data)
-                var item = $('#caller').combobox('getData');
-                if (item.length > 0) {
-                    $('#caller').combobox('select',data[0].name);
-                }
-            }
+        var caller = $('#caller');
+        $.ajax({
+            type: 'post',
+            dataType: 'json',
+            async: false,
+            url: '/caller/findDepartment',
+            success: function (data) {
+                data.unshift({"department": "全部"});
+                caller.combobox({
+                    valueField: 'department',
+                    textField: 'department',
+                    data: data,
+                    onLoadSuccess: function (result) {
+                        var item = $('#caller').combobox('getData');
+                        if (item.length > 0) {
+                            caller.combobox('select', result[0].department);
+                            caller.combobox('setValue', result[0].department);
+                        }
+                    }
+                });
+            }.bind(this)
         });
     };
 
-    this.ReLoadTableData = function () {
-        var params = this.GetParams();
-        // $.ajax({
-        //     type: "POST",
-        //     dataType: 'json',
-        //     data: params,
-        //     url: 'log/findAllByCallerAndNameAndStateAndTime',
-        //     success: function (result) {
-        //         $('#log-table').datagrid('loadData', result);
-        //     }.bind(this)
-        // });
+    this.InitCalendar = function () {
+        var startDate = $("#start-date");
+        var endDate = $("#end-date");
 
-        $('#log-table').datagrid({
-            method: "POST",
-            url: 'log/findAllByCallerAndNameAndStateAndTime',
-            queryParams: params
+        startDate.datebox({
+            panelWidth: 203,
+            panelHeight: 260
         });
-    };
 
-    this.GetParams = function () {
-        var name = $('#name').combobox('getValue');
-        var caller = $('#caller').combobox('getValue');
-        var state = $('#state').combobox('getValue');
-        return{
-            name : name === '' || name === '全部' ? '全部'  : name,
-            callerCode: caller === '全部' || caller === '' ? '-1' : caller,
-            startTime: $('#start-date').datebox('getValue'),
-            endTime: $('#end-date').datebox('getValue'),
-            state: state === '全部' || state === '' ? -1 : state === '成功' ? 1 : 0
-        }
+        endDate.datebox({
+            panelWidth: 203,
+            panelHeight: 260
+        });
+
+        startDate.datebox("setValue", moment().add(-1, 'months').format('YYYY/MM/DD'));
+        endDate.datebox("setValue", moment().add(0, 'days').format('YYYY/MM/DD'));
     };
 
     this.ReloadPortTable = function () {
@@ -91,10 +95,10 @@ var App = function () {
             columns: [[
                 { field: 'name', title: '名称', align: 'center', width: width * 0.2},
                 { field: 'state', title: '状态', align: 'center', width: width * 0.12, formatter: this.StateFormatter.bind(this)},
-                { field: 'callerName', title: '调用者', align: 'center', width: width * 0.2},
-                { field: 'startTime', title: '开发时间', align: 'center', width: width * 0.12, formatter: this.DateFormatter.bind(this)},
-                { field: 'endTime', title: '结束时间', align: 'center', width: width * 0.12, formatter: this.DateFormatter.bind(this)},
-                { field: 'consumingTime', title: '耗时（s）', align: 'center', width: width * 0.2, formatter: this.TimeFormatter.bind(this)}
+                { field: 'department', title: '调用者', align: 'center', width: width * 0.2},
+                { field: 'executeStartTime', title: '开发时间', align: 'center', width: width * 0.12, formatter: this.DateFormatter.bind(this)},
+                { field: 'executeEndTime', title: '结束时间', align: 'center', width: width * 0.12, formatter: this.DateFormatter.bind(this)},
+                { field: 'elapsedTime', title: '耗时（s）', align: 'center', width: width * 0.2, formatter: this.TimeFormatter.bind(this)}
             ]],
             striped: true,
             singleSelect: true,
@@ -151,31 +155,33 @@ var App = function () {
         $('#error-info').text(message);
     };
 
-    this.CalendarControl = function () {
-        $('#start-date').datebox({
-            panelWidth: 203,
-            panelHeight: 260
-        });
-
-        $('#end-date').datebox({
-            panelWidth: 203,
-            panelHeight: 260
-        });
-
-        var startDate = moment().add(-1, 'months').format('YYYY/MM/DD');
-        var endDate = moment().add(1, 'days').format('YYYY/MM/DD');
-        $("#start-date").datebox("setValue", startDate);
-        $("#end-date").datebox("setValue", endDate);
-    };
-
-    this.SetSelectPanel = function () {
-        $('#state').combobox({
-            panelHeight: 109
-        });
-    };
-
     this.OnQueryButtonClick = function () {
         this.ReLoadTableData();
+    };
+
+    this.ReLoadTableData = function () {
+        var params = this.GetParams();
+        console.log(params)
+        $('#log-table').datagrid({
+            method: "post",
+            url: '/interfaceLog/findAllByPage',
+            queryParams: params
+        });
+    };
+
+    this.GetParams = function () {
+        var name = $('#name').combobox('getValue');
+        var caller = $('#caller').combobox('getValue');
+        var requestStartTime = $('#start-date').datebox('getValue');
+        var requestEndTime = $('#end-date').datebox('getValue');
+        var state = $('#state').combobox('getValue');
+        return{
+            interfaceName : name === '全部'? 'all'  : name,
+            department: caller === '全部'? 'all' : caller,
+            requestStartTime: requestStartTime,
+            requestEndTime: requestEndTime,
+            state: state === '-1'? 'all' : state
+        }
     };
 
 };
