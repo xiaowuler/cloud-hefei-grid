@@ -11,4 +11,7 @@ public class InterfaceLogDTO {
     private Date executeStartTime;
     private Date executeEndTime;
     private double elapsedTime;
+    private String requestType;
+    private String parameters;
+    private String errorMessage;
 }

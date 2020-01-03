@@ -19,7 +19,7 @@
     </select>
 
     <select id = "findAllByPage" resultType = "com.pingchuan.dto.web.InterfaceLogDTO">
-        select i.`name`, s.state, c.department, l.execute_start_time executeStartTime, l.execute_end_time executeEndTime, (l.execute_end_time - l.execute_start_time)elapsedTime
+        select i.`name`, s.state, c.department, l.execute_start_time executeStartTime, l.execute_end_time executeEndTime, (l.execute_end_time - l.execute_start_time)elapsedTime, l.request_type requestType, l.parameters, l.error_message errorMessage
         from interface_logs l
         left join callers c on l.caller_code = c.`code`
         left join interfaces i on l.interface_id = i.id

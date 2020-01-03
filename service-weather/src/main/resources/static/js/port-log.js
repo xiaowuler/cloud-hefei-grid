@@ -98,8 +98,11 @@ var App = function () {
                 { field: 'department', title: '调用者', align: 'center', width: width * 0.2},
                 { field: 'executeStartTime', title: '开发时间', align: 'center', width: width * 0.12, formatter: this.DateFormatter.bind(this)},
                 { field: 'executeEndTime', title: '结束时间', align: 'center', width: width * 0.12, formatter: this.DateFormatter.bind(this)},
-                { field: 'elapsedTime', title: '耗时（s）', align: 'center', width: width * 0.2, formatter: this.TimeFormatter.bind(this)}
-            ]],
+                { field: 'elapsedTime', title: '耗时（s）', align: 'center', width: width * 0.2, formatter: this.TimeFormatter.bind(this)},
+                { field: 'requestType', title:'请求类型', width:150, hidden: 'false'},
+                { field: 'parameters', title: '请求参数', width:150, hidden: 'false'},
+                { field: 'errorMessage', title:'错误信息', width:150, hidden: 'false'},
+             ]],
             striped: true,
             singleSelect: true,
             fitColumns: true,
@@ -130,7 +133,7 @@ var App = function () {
     };
 
     this.DateFormatter = function (value, row) {
-        return moment(value).format('YYYY/MM/DD');
+        return moment(value).format('YYYY-MM-DD HH:mm:ss');
     };
 
     this.OnTableGridBeforeLoad = function () {
@@ -147,12 +150,10 @@ var App = function () {
     };
 
     this.SetDetailText = function (index, data) {
-        var url = data.log.name;
-        var param = data.log.params;
-        var message = data.log.errorMessage;
-        $('#request-url').text(url);
-        $('#request-param').text(param);
-        $('#error-info').text(message);
+        $('#request-url').text(data.name);
+        $('#request-type').text(data.requestType)
+        $('#request-param').text(data.parameters);
+        $('#error-info').text(data.errorMessage);
     };
 
     this.OnQueryButtonClick = function () {
@@ -161,7 +162,6 @@ var App = function () {
 
     this.ReLoadTableData = function () {
         var params = this.GetParams();
-        console.log(params)
         $('#log-table').datagrid({
             method: "post",
             url: '/interfaceLog/findAllByPage',
