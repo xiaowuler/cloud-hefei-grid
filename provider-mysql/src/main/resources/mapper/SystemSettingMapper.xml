@@ -4,4 +4,18 @@
     <select id = "getSystemSettingValueById" resultType = "int">
         select `value` from system_settings where id = #{id}
     </select>
+
+    <select id = "findTotalCount" resultType = "int">
+        select count(*) from system_settings
+    </select>
+
+    <select id = "findAllByPage" resultType = "com.pingchuan.domain.SystemSetting">
+        select id, `name`, `value`, description
+        from system_settings
+        limit #{page}, #{rows}
+    </select>
+
+    <update id = "updateValueById">
+        update system_settings set `value` = #{value} where id = #{id}
+    </update>
 </mapper>

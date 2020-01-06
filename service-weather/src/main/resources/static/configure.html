@@ -58,9 +58,7 @@
     <div class="content">
         <div class="configure bg">
             <div class="operate clearfix">
-                <button class="add" id="add">添加</button>
                 <button class="edit" id="edit">修改</button>
-                <button class="delete" id="delete">删除</button>
             </div>
             <div class="configure-table table">
                 <table id="configure-table"></table>
@@ -99,8 +97,9 @@
         <div class="dialog-detail">
             <div class="clearfix">
                 <div class="option option-name fl">
+                    <input type="hidden" name="id" id="setting-id">
                     <label>名称 *</label>
-                    <input type="text" name="name" id="edit-name" value="平均耗时统计取样条数">
+                    <input type="text" name="name" id="edit-name" value="平均耗时统计取样条数" readonly="true">
                 </div>
                 <div class="option option-value fl">
                     <label>值 * </label>
@@ -110,12 +109,12 @@
             <div class="clearfix">
                 <div class="option option-describe fl">
                     <label>描述 *</label>
-                    <textarea  id="edit-describe"></textarea>
+                    <textarea  id="edit-describe" readonly="true"></textarea>
                 </div>
             </div>
             <div class="button-group">
-                <button class="sure" id="edit-sure">确定</button>
                 <button class="quit" id="edit-quit">取消</button>
+                <button class="sure" id="edit-sure">确定</button>
             </div>
         </div>
     </div>

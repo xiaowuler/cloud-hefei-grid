@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 @FeignClient(value = "provider-mysql")
 public interface CallerService {
+
     @PostMapping("caller/findDepartment")
     List<Caller> findDepartment();
 }

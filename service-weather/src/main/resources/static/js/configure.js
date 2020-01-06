@@ -4,20 +4,11 @@ var App = function () {
     this.Startup = function () {
         this.ReLayout();
         this.InitConfigureGrid();
-        this.ReloadData();
-
-        $('#add').on('click', this.OnAddButtonClick.bind(this));
-        $('#add-close').on('click', this.AddDialogHide.bind(this));
-        $('#add-sure').on('click', this.AddConfigure.bind(this));
-        $('#add-quit').on('click', this.AddDialogHide.bind(this));
-        $('#add-switch a').on('click', this.OnSwitchButtonClick.bind(this));
 
         $('#edit').on('click', this.OnEditButtonClick.bind(this));
         $('#edit-close').on('click', this.EditDialogHide.bind(this));
         $('#edit-sure').on('click', this.EditConfigure.bind(this));
         $('#edit-quit').on('click', this.EditDialogHide.bind(this));
-        $('#edit-switch a').on('click', this.OnSwitchButtonClick.bind(this));
-        $('#delete').on('click', this.OnDeleteButtonClick.bind(this));
         window.onresize = this.ReLayout.bind(this);
     };
 
@@ -30,17 +21,11 @@ var App = function () {
         $('.configure-table,.datagrid-wrap').height(windowHeight - 130);
     };
 
-    this.ReloadData = function () {
-        this.table.datagrid({
-            method: "POST",
-            url: 'config/findAllByPage'
-        });
-    };
-
     this.InitConfigureGrid = function () {
         var width = $(window).width() - 214;
         this.table.datagrid({
-            //height: window.innerHeight-160,
+            method: 'post',
+            url: '/systemSetting/findAllByPage',
             columns: [[
                 { field: 'name', title: '名称', align: 'center', width: width * 0.2},
                 { field: 'value', title: '值', align: 'center', width: width * 0.2},
@@ -61,10 +46,6 @@ var App = function () {
         });
     };
 
-    this.OnTableGridLoaded = function (data) {
-        this.table.datagrid('selectRow', 0);
-    };
-
     this.OnTableGridBeforeLoad = function () {
         this.table.datagrid('getPager').pagination({
             beforePageText: '第',
@@ -74,15 +55,8 @@ var App = function () {
         });
     };
 
-    this.OnAddButtonClick = function () {
-        $('.dialog-add').show();
-        $('.dialog-bg').show();
-        $('.option input, .option textarea').val("")
-    };
-
-    this.AddDialogHide = function () {
-        $('.dialog-add').hide();
-        $('.dialog-bg').hide();
+    this.OnTableGridLoaded = function (data) {
+        this.table.datagrid('selectRow', 0);
     };
 
     this.OnEditButtonClick = function () {
@@ -90,12 +64,13 @@ var App = function () {
         $('.dialog-bg').show();
 
         var selected = this.table.datagrid('getSelected');
+        $("#setting-id").attr("value", selected.id);
         $('#edit-name').attr("value",selected.name);
         $('#edit-value').attr("value",selected.value);
         $('#edit-describe').attr("value",selected.description);
 
         var index = this.table.datagrid('getRowIndex',selected.id);
-        this.table.datagrid('beginEdit',index);
+        this.table.datagrid('beginEdit', index);
     };
 
     this.EditDialogHide = function () {
@@ -103,54 +78,17 @@ var App = function () {
         $('.dialog-bg').hide();
     };
 
-    this.OnSwitchButtonClick = function (event) {
-        $(event.target).parent().toggleClass('switch-on');
-    };
-
-    this.AddConfigure = function () {
-        this.AddDialogHide();
-        $.ajax({
-            type: "POST",
-            dataType: 'json',
-            data: {
-                name: $('#add-name').val(),
-                value: $('#add-value').val(),
-                description: $('#add-describe').val()
-            },
-            url: 'config/insert',
-            success: function (result) {
-                this.ReloadData();
-            }.bind(this)
-        });
-    };
-
     this.EditConfigure = function () {
         this.EditDialogHide();
         $.ajax({
-            type: "POST",
-            dataType: 'json',
+            type: 'post',
+            url: '/systemSetting/updateValueById',
             data: {
-                name: $('#edit-name').val(),
-                value: $('#edit-value').val(),
-                description: $('#edit-describe').val()
-            },
-            url: 'config/updateById',
-            success: function (result) {
-                this.ReloadData();
-            }.bind(this)
-        });
-    };
-
-    this.OnDeleteButtonClick = function () {
-        $.ajax({
-            type: "POST",
-            dataType: 'json',
-            url: 'config/delete',
-            data: {
-                id: this.table.datagrid('getSelected').id
+                id: $("#setting-id").attr('value'),
+                value: $('#edit-value').val()
             },
             success: function (result) {
-                this.ReloadData();
+                this.InitConfigureGrid();
             }.bind(this)
         });
     };

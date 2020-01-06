@@ -162,3 +162,7 @@
 .combo-panel{
     height: auto!important;
 }
+
+.combobox-item{
+    text-align: center;
+}

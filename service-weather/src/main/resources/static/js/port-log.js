@@ -183,7 +183,6 @@ var App = function () {
             state: state === '-1'? 'all' : state
         }
     };
-
 };
 
 $(document).ready(function () {
