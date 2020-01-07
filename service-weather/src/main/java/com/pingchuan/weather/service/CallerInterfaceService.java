@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface CallerInterfaceService {
 
     @PostMapping("callerInterface/addCallerInterface")
-    void addCallerInterface(@RequestParam String code, @RequestParam List<Integer> interfaceIds);
+    void addCallerInterface(@RequestParam String code, @RequestParam Integer[] interfaceIds);
 
     @PostMapping("callerInterface/updateCallerInterface")
-    void updateCallerInterface(@RequestParam String code, @RequestParam List<Integer> interfaceIds);
+    void updateCallerInterface(@RequestParam String code, @RequestParam Integer[] interfaceIds);
 }

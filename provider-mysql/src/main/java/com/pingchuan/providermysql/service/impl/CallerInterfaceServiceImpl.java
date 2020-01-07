@@ -22,18 +22,18 @@ public class CallerInterfaceServiceImpl implements CallerInterfaceService {
     }
 
     @Override
-    public void addCallerInterface(String code, List<Integer> interfaceIds) {
+    public void addCallerInterface(String code, Integer[] interfaceIds) {
         addCallerInterfaces(code, interfaceIds);
     }
 
     @Override
-    public void updateCallerInterface(String code, List<Integer> interfaceIds) {
+    public void updateCallerInterface(String code, Integer[] interfaceIds) {
         callerInterfaceMapper.deleteCallerInterface(code);
         addCallerInterfaces(code, interfaceIds);
     }
 
-    private void addCallerInterfaces(String code, List<Integer> interfaceIds){
-        if (interfaceIds != null){
+    private void addCallerInterfaces(String code, Integer[] interfaceIds){
+        if (interfaceIds.length != 0){
             for (Integer interfaceId: interfaceIds)
                 callerInterfaceMapper.addCallerInterface(code, interfaceId);
         }
