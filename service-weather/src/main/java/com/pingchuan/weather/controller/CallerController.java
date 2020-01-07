@@ -2,6 +2,7 @@ package com.pingchuan.weather.controller;
 
 import java.util.List;
 import com.pingchuan.domain.Caller;
+import com.pingchuan.dto.web.CallerDTO;
 import com.pingchuan.weather.service.CallerService;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,5 +20,10 @@ public class CallerController {
     @PostMapping("findDepartment")
     public List<Caller> findDepartment(){
         return callerService.findDepartment();
+    }
+
+    @PostMapping("findCallerAuthorizationInfo")
+    public List<CallerDTO> findCallerAuthorizationInfo(int page, int rows){
+        return callerService.findCallerAuthorizationInfo(page, rows);
     }
 }

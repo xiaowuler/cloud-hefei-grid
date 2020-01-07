@@ -2,6 +2,7 @@ package com.pingchuan.providermysql.service.impl;
 
 import java.util.List;
 import com.pingchuan.domain.Caller;
+import com.pingchuan.dto.web.CallerDTO;
 import com.pingchuan.providermysql.mapper.CallerMapper;
 import com.pingchuan.providermysql.service.CallerService;
 
@@ -24,5 +25,10 @@ public class CallerServiceImpl implements CallerService {
     @Override
     public List<Caller> findDepartment() {
         return callerMapper.findDepartment();
+    }
+
+    @Override
+    public List<CallerDTO> findCallerAuthorizationInfo(int page, int rows) {
+        return callerMapper.findCallerAuthorizationInfo((page - 1) * rows, rows);
     }
 }

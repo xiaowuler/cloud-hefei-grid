@@ -5,4 +5,12 @@
     <select id="findOneByCallerAndInterface" resultType="com.pingchuan.domain.CallerInterface">
         select caller_code callerCode, interface_id interfaceId from caller_interfaces where caller_code = #{callerCode} and interface_id = #{interfaceId};
     </select>
+
+    <insert id = "addCallerInterface">
+        insert into caller_interfaces(caller_code, interface_id) values(#{code}, #{interfaceId})
+    </insert>
+
+    <delete id = "deleteCallerInterface">
+        delete from caller_interfaces where caller_code = #{code}
+    </delete>
 </mapper>
