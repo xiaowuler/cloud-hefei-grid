@@ -174,7 +174,11 @@ var App = function () {
         $('.dialog-add').show();
         $('.dialog-bg').show();
         $('#dialog-title').text('修改');
-        $('#add-name').val(this.table.datagrid('getSelected').loginName);
+        var selected = this.table.datagrid('getSelected');
+        var index = this.table.datagrid('getRowIndex',selected);
+        $('#add-name').val(selected.loginName);
+        var row = $("#accredit-table").datagrid('getRows')[index];
+
         $("#filtrate-table").datagrid("resize");
         var rows = $("#filtrate-table").datagrid("getRows");
         for (var i = 0; i < rows.length; i++) {
