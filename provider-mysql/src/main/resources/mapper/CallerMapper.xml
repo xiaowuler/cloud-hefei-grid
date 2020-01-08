@@ -19,4 +19,32 @@
         order by r.update_time desc
         limit #{page}, #{rows}
     </select>
+
+    <select id = "findAllByPage" resultType = "com.pingchuan.domain.Caller">
+        select `code`, department, login_name as loginName, real_name as realName, login_password as loginPassword, update_time as updateTime, role, enabled
+        from callers
+        order by update_time desc
+        limit #{page}, #{rows}
+    </select>
+
+    <update id = "setCallerEnabled">
+        update callers
+        set enabled = #{isEnabled}
+        where `code` = #{code}
+    </update>
+
+    <insert id = "addCaller" parameterType = "com.pingchuan.domain.Caller">
+        insert into callers(`code`, department, login_name, real_name, login_password, role, update_time, enabled)
+        values(#{caller.code}, #{caller.department}, #{caller.loginName}, #{caller.realName} ,#{caller.loginPassword}, #{caller.role}, #{caller.updateTime}, #{caller.enabled})
+    </insert>
+
+    <update id = "updateCaller" parameterType = "com.pingchuan.domain.Caller">
+        update callers
+        set department = #{caller.department}, login_name = #{caller.loginName}, real_name = #{caller.realName}, login_password = #{caller.loginPassword}, role = #{caller.role}, update_time = #{caller.updateTime}, enabled = #{caller.enabled}
+        where `code` = #{caller.code}
+    </update>
+
+    <delete id = "deleteCaller">
+        delete from callers where `code` = #{code}
+    </delete>
 </mapper>

@@ -23,12 +23,12 @@ public class CallerInterfaceController {
     }
 
     @PostMapping("addCallerInterface")
-    public void addCallerInterface(@RequestParam String code, @RequestParam List<Integer> interfaceIds){
+    public void addCallerInterface(@RequestParam String code, @RequestParam Integer[] interfaceIds){
         callerInterfaceService.addCallerInterface(code, interfaceIds);
     }
 
     @PostMapping("updateCallerInterface")
-    public void updateCallerInterface(@RequestParam String code, @RequestParam List<Integer> interfaceIds){
+    public void updateCallerInterface(@RequestParam String code, @RequestParam Integer[] interfaceIds){
         callerInterfaceService.updateCallerInterface(code, interfaceIds);
     }
 }
