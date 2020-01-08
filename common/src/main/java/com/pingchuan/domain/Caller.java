@@ -1,9 +1,13 @@
 package com.pingchuan.domain;
 
-import lombok.Data;
 import java.util.Date;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Caller {
     private String code;
     private String department;
@@ -12,5 +16,5 @@ public class Caller {
     private String loginPassword;
     private String role;
     private Date updateTime;
-    private byte enabled;
+    private int enabled;
 }

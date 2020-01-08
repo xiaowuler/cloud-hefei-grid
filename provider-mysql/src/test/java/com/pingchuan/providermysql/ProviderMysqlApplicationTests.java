@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @SpringBootTest
 class ProviderMysqlApplicationTests {
@@ -26,8 +27,6 @@ class ProviderMysqlApplicationTests {
 
     @Test
     void contextLoads() {
-        DecimalFormat df = new DecimalFormat("#.00");
-        System.out.println(Double.valueOf(df.format(2.33333)));
-        interfaceService.getInterfaceBaseInfo();
+
     }
 }

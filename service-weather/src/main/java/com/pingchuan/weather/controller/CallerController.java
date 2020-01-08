@@ -1,6 +1,10 @@
 package com.pingchuan.weather.controller;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
+
 import com.pingchuan.domain.Caller;
 import com.pingchuan.dto.web.CallerDTO;
 import com.pingchuan.weather.service.CallerService;
@@ -25,5 +29,34 @@ public class CallerController {
     @PostMapping("findCallerAuthorizationInfo")
     public List<CallerDTO> findCallerAuthorizationInfo(int page, int rows){
         return callerService.findCallerAuthorizationInfo(page, rows);
+    }
+
+    @PostMapping("findAllByPage")
+    public List<Caller> findAllByPage(int page, int rows){
+        return callerService.findAllByPage(page, rows);
+    }
+
+    @PostMapping("setCallerEnabled")
+    public void setCallerEnabled(String code, int isEnabled){
+        callerService.setCallerEnabled(code, isEnabled);
+    }
+
+    @PostMapping("addCaller")
+    public void addCaller(String department, String loginName, String realName, String loginPassword, String role, int enabled){
+        String code = UUID.randomUUID().toString().replace("-", "");
+        Date updateTime = new Date();
+        Caller caller = new Caller(code, department, loginName, realName, loginPassword, role, updateTime, enabled);
+        callerService.addCaller(caller);
+    }
+
+    @PostMapping("updateCaller")
+    public void updateCaller(String code, String department, String loginName, String realName, String loginPassword, String role, int enabled){
+        Caller caller = new Caller(code, department, loginName, realName, loginPassword, role, new Date(), enabled);
+        callerService.updateCaller(caller);
+    }
+
+    @PostMapping("deleteCaller")
+    public void deleteCaller(String code){
+        callerService.deleteCaller(code);
     }
 }
