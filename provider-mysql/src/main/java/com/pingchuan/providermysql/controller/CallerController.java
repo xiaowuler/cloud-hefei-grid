@@ -2,6 +2,7 @@ package com.pingchuan.providermysql.controller;
 
 import java.util.List;
 import com.pingchuan.domain.Caller;
+import com.pingchun.utils.PageResult;
 import com.pingchuan.dto.web.CallerDTO;
 import com.pingchuan.providermysql.service.CallerService;
 
@@ -26,12 +27,12 @@ public class CallerController {
     }
 
     @PostMapping("findCallerAuthorizationInfo")
-    public List<CallerDTO> findCallerAuthorizationInfo(@RequestParam int page, @RequestParam int rows){
+    public PageResult<CallerDTO> findCallerAuthorizationInfo(@RequestParam int page, @RequestParam int rows){
         return callerService.findCallerAuthorizationInfo(page, rows);
     }
 
     @PostMapping("findAllByPage")
-    public List<Caller> findAllByPage(int page, int rows){
+    public PageResult<Caller> findAllByPage(int page, int rows){
        return callerService.findAllByPage(page, rows);
     }
 

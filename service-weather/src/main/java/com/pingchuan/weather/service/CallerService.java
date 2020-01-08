@@ -2,6 +2,7 @@ package com.pingchuan.weather.service;
 
 import java.util.List;
 import com.pingchuan.domain.Caller;
+import com.pingchun.utils.PageResult;
 import com.pingchuan.dto.web.CallerDTO;
 
 import org.springframework.cloud.openfeign.FeignClient;
@@ -17,10 +18,10 @@ public interface CallerService {
     List<Caller> findDepartment();
 
     @PostMapping("caller/findCallerAuthorizationInfo")
-    List<CallerDTO> findCallerAuthorizationInfo(@RequestParam int page, @RequestParam int rows);
+    PageResult<CallerDTO> findCallerAuthorizationInfo(@RequestParam int page, @RequestParam int rows);
 
     @PostMapping("caller/findAllByPage")
-    List<Caller> findAllByPage(@RequestParam int page, @RequestParam int rows);
+    PageResult<Caller> findAllByPage(@RequestParam int page, @RequestParam int rows);
 
     @PostMapping("caller/setCallerEnabled")
     void setCallerEnabled(@RequestParam String code, @RequestParam int isEnabled);

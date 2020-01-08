@@ -2,6 +2,7 @@ package com.pingchuan.providermysql.service.impl;
 
 import java.util.List;
 import com.pingchuan.domain.Caller;
+import com.pingchun.utils.PageResult;
 import com.pingchuan.dto.web.CallerDTO;
 import com.pingchuan.providermysql.mapper.CallerMapper;
 import com.pingchuan.providermysql.service.CallerService;
@@ -32,13 +33,19 @@ public class CallerServiceImpl implements CallerService {
     }
 
     @Override
-    public List<CallerDTO> findCallerAuthorizationInfo(int page, int rows) {
-        return callerMapper.findCallerAuthorizationInfo((page - 1) * rows, rows);
+    public PageResult<CallerDTO> findCallerAuthorizationInfo(int page, int rows) {
+        PageResult<CallerDTO> pageResult = new PageResult<>();
+        pageResult.setTotal(callerMapper.findCallerAuthorizationCount());
+        pageResult.setRows(callerMapper.findCallerAuthorizationInfo((page - 1) * rows, rows));
+        return pageResult;
     }
 
     @Override
-    public List<Caller> findAllByPage(int page, int rows) {
-        return callerMapper.findAllByPage((page - 1) * rows, rows);
+    public PageResult<Caller> findAllByPage(int page, int rows) {
+        PageResult<Caller> pageResult = new PageResult<>();
+        pageResult.setTotal(callerMapper.findTotalCount());
+        pageResult.setRows(callerMapper.findAllByPage((page - 1) * rows, rows));
+        return pageResult;
     }
 
     @Override

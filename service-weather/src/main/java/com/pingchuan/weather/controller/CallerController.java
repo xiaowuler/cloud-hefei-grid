@@ -8,6 +8,7 @@ import com.pingchuan.domain.Caller;
 import com.pingchuan.dto.web.CallerDTO;
 import com.pingchuan.weather.service.CallerService;
 
+import com.pingchun.utils.PageResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,12 +27,12 @@ public class CallerController {
     }
 
     @PostMapping("findCallerAuthorizationInfo")
-    public List<CallerDTO> findCallerAuthorizationInfo(int page, int rows){
+    public PageResult<CallerDTO> findCallerAuthorizationInfo(int page, int rows){
         return callerService.findCallerAuthorizationInfo(page, rows);
     }
 
     @PostMapping("findAllByPage")
-    public List<Caller> findAllByPage(int page, int rows){
+    public PageResult<Caller> findAllByPage(int page, int rows){
         return callerService.findAllByPage(page, rows);
     }
 

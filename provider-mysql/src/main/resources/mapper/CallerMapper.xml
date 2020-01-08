@@ -9,6 +9,14 @@
         select distinct(department) from callers
     </select>
 
+    <select id = "findCallerAuthorizationCount" resultType = "int">
+        select count(*) from (select ci.caller_code
+		from caller_interfaces ci
+		join callers c on c.`code` = ci.caller_code
+		join interfaces i on i.id = ci.interface_id
+		group by ci.caller_code) r
+    </select>
+
     <select id = "findCallerAuthorizationInfo" resultType = "com.pingchuan.dto.web.CallerDTO">
         select r.`code`, r.login_name loginName, r.real_name realName, GROUP_CONCAT(r.url, '(',r.`explain`,')' separator '、') url
         from (select c.`code`, c.department, c.login_name, c.login_password , c.real_name, c.role, i.`name` url, i.`explain`, c.update_time, c.enabled
@@ -18,6 +26,10 @@
         group by r.`code`, r.login_name, r.real_name
         order by r.update_time desc
         limit #{page}, #{rows}
+    </select>
+
+    <select id = "findTotalCount" resultType = "int">
+        select count(1) from callers
     </select>
 
     <select id = "findAllByPage" resultType = "com.pingchuan.domain.Caller">
