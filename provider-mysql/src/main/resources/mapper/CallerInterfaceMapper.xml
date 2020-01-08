@@ -13,4 +13,12 @@
     <delete id = "deleteCallerInterface">
         delete from caller_interfaces where caller_code = #{code}
     </delete>
+
+    <select id = "findInterfaceIdByCode" resultType = "java.lang.Integer">
+        select distinct(i.id)
+        from caller_interfaces ci
+        left join callers c on c.`code` = ci.caller_code
+        left join interfaces i on i.id = ci.interface_id
+        WHERE c.`code` = #{code}
+    </select>
 </mapper>

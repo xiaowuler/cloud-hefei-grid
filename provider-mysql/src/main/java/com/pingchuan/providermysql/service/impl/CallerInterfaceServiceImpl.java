@@ -1,6 +1,5 @@
 package com.pingchuan.providermysql.service.impl;
 
-import java.util.List;
 import com.pingchuan.domain.CallerInterface;
 import com.pingchuan.providermysql.mapper.CallerInterfaceMapper;
 import com.pingchuan.providermysql.service.CallerInterfaceService;
@@ -8,6 +7,8 @@ import com.pingchuan.providermysql.service.CallerInterfaceService;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @Transactional
@@ -30,6 +31,11 @@ public class CallerInterfaceServiceImpl implements CallerInterfaceService {
     public void updateCallerInterface(String code, Integer[] interfaceIds) {
         callerInterfaceMapper.deleteCallerInterface(code);
         addCallerInterfaces(code, interfaceIds);
+    }
+
+    @Override
+    public List<Integer> findInterfaceIdByCode(String code) {
+        return callerInterfaceMapper.findInterfaceIdByCode(code);
     }
 
     private void addCallerInterfaces(String code, Integer[] interfaceIds){

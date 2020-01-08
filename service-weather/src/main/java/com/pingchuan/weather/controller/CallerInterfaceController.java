@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("callerInterface")
 public class CallerInterfaceController {
@@ -22,5 +24,10 @@ public class CallerInterfaceController {
     @PostMapping("updateCallerInterface")
     public void updateCallerInterface(@RequestParam String code, @RequestParam Integer[] interfaceIds){
         callerInterfaceService.updateCallerInterface(code, interfaceIds);
+    }
+
+    @PostMapping("findInterfaceIdByCode")
+    public List<Integer> findInterfaceIdByCode(String code){
+        return callerInterfaceService.findInterfaceIdByCode(code);
     }
 }

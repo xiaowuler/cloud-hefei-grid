@@ -31,4 +31,9 @@ public class CallerInterfaceController {
     public void updateCallerInterface(@RequestParam String code, @RequestParam Integer[] interfaceIds){
         callerInterfaceService.updateCallerInterface(code, interfaceIds);
     }
+
+    @PostMapping("findInterfaceIdByCode")
+    public List<Integer> findInterfaceIdByCode(String code){
+        return callerInterfaceService.findInterfaceIdByCode(code);
+    }
 }

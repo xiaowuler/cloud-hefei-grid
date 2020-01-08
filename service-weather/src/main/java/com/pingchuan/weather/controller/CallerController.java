@@ -1,6 +1,5 @@
 package com.pingchuan.weather.controller;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
