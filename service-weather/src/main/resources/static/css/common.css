@@ -163,7 +163,7 @@
     position: fixed;
     top: 50%;
     left: 50%;
-    z-index: 10;
+    z-index: 20;
     border: 1px solid #53556c;
     -webkit-border-radius: 6px;
     -moz-border-radius: 6px;
@@ -210,12 +210,13 @@
     position: absolute;
     top: 0;
     left: 0;
+    z-index: 10;
     display: none;
     background: rgba(30,30,47,0.6);
 }
 
 .option{
-    margin: 0 16px 15px 0 ;
+    /*margin: 0 16px 15px 0 ;*/
 }
 
 .option label{
@@ -236,7 +237,7 @@
 }
 
 .option-name input{
-    width: 230px;
+    width: 100%;
 }
 
 .option-number input{
@@ -309,7 +310,6 @@
 
 .button-group button{
     width: 64px;
-    margin-top: 5px;
     margin-left: 12px;
     line-height: 36px;
     color: #ffffff;
@@ -367,12 +367,15 @@
     background: #27293d;
 }
 
-.table .datagrid-row-selected{
-    background: #3b3d54;
+.table .datagrid-cell {
+    padding: 0 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
+.table .datagrid-row-selected,
 .table .datagrid-row-over{
-    background: #59bbd9;
+    background: #3b3d54;
 }
 
 .table .datagrid-pager {

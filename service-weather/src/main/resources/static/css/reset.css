@@ -152,7 +152,7 @@ textarea:-ms-input-placeholder{ /* Internet Explorer 10+ */
     float: right;
 }
 
-.table {
+.tables {
     width: 100%;
     display: table;
     height: 100%;

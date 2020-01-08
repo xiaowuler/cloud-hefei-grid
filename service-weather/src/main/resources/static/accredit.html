@@ -60,7 +60,6 @@
             <div class="operate clearfix">
                 <button class="add" id="add">添加</button>
                 <button class="edit" id="edit">修改</button>
-                <button class="delete" id="delete">删除</button>
             </div>
             <div class="accredit-table table">
                 <table id="accredit-table"></table>
@@ -68,28 +67,18 @@
         </div>
     </div>
     <div class="dialog dialog-add bg">
-        <h2>添加</h2>
+        <h2 id="dialog-title">添加</h2>
         <button class="close" id="add-close"></button>
         <div class="dialog-detail">
-            <div class="clearfix">
-                <div class="option option-name fl">
-                    <label>名称 *</label>
-                    <input type="text" name="name" id="add-name" placeholder="请输入名称">
-                </div>
-                <div class="option option-number fl">
-                    <label>编号 * </label>
-                    <input type="text" name="number" id="add-number" placeholder="请输入编号">
-                </div>
-                <div class="switch" id="add-switch">
-                    启用<a href="javascript:;"></a>
-                </div>
+            <div class="option option-name">
+                <label>用户名 *</label>
+                <input type="text" name="name" id="add-name" readonly placeholder="请输入用户名">
             </div>
-            <div class="clearfix">
-                <div class="option option-key fl">
-                    <label>密钥 *</label>
-                    <input type="text" name="key" id="add-key" disabled placeholder="生成密钥">
+            <div class="option option-filtrate">
+                <label>接口筛选 *</label>
+                <div class="filtrate-table table">
+                    <table id="filtrate-table" class="easyui-datagrid"></table>
                 </div>
-                <button class="create-key" id="add-create-key">生成密钥</button>
             </div>
             <div class="button-group">
                 <button class="sure" id="add-sure">确定</button>
@@ -97,7 +86,7 @@
             </div>
         </div>
     </div>
-    <div class="dialog dialog-edit bg">
+    <!--<div class="dialog dialog-edit bg">
         <h2>修改</h2>
         <button class="close" id="edit-close"></button>
         <div class="dialog-detail">
@@ -126,8 +115,7 @@
                 <button class="quit" id="edit-quit">取消</button>
             </div>
         </div>
-
-    </div>
+    </div>-->
     <div class="dialog-bg"></div>
 </div>
 </body>
