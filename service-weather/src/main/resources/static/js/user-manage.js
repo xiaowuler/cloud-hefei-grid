@@ -17,33 +17,41 @@ var App = function () {
         $('#edit-sure').on('click', this.EditUser.bind(this));
         $('#edit-quit').on('click', this.EditDialogHide.bind(this));
         $('#edit-switch a').on('click', this.OnSwitchButtonClick.bind(this));
+
         $('#delete').on('click', this.OnDeleteButtonClick.bind(this));
+        $('#delete-close').on('click', this.DeleteDialogHide.bind(this));
+        $('#delete-sure').on('click', this.DeleteUser.bind(this));
+        $('#delete-quit').on('click', this.DeleteDialogHide.bind(this));
         window.onresize = this.ReLayout.bind(this);
     };
 
     this.ReLayout = function () {
-        var width = $('.content').width();
-        var windowHeight = $(window).height();
-        $('.aside').height(windowHeight - 70);
-        $('.datagrid').width(width - 20);
-        $('.user-table').width(width - 20);
-        $('.user-table,.datagrid-wrap').height(windowHeight - 130);
+        var height = $(window).height();
+        $('.aside').height(height - 70);
+        $('.user-table').height(height - 130);
     };
 
     this.ReloadData = function () {
         this.table.datagrid({
             method: "POST",
-            url: 'user/findAllByPage'
+            url: 'caller/findAllByPage',
+            queryParams: {
+                page: 1,
+                rows: 10
+            }
         });
     };
 
     this.InitUserGrid = function () {
-        var width = $(window).width() - 214;
         this.table.datagrid({
             columns: [[
-                { field: 'name', title: '用户名', align: 'center', width: width * 0.2},
-                { field: 'password', title: '密码', align: 'center', width: width * 0.2},
-                { field: 'enabled', title: '是否启用', align: 'center', width: width * 0.2, formatter: this.StateFormatter.bind(this)}
+                { field: 'code', title: '编号', align: 'center', width: 80},
+                { field: 'department', title: '部门', align: 'center', width: 50},
+                { field: 'loginName', title: '登录名', align: 'center', width: 50},
+                { field: 'realName', title: '真实姓名', align: 'center', width: 50},
+                { field: 'loginPassword', title: '登录密码', align: 'center', width: 50},
+                { field: 'role', title: '角色', align: 'center', width: 40},
+                { field: 'enabled', title: '是否启用', align: 'center', width: 50, formatter: this.StateFormatter.bind(this)}
             ]],
             striped: true,
             singleSelect: true,
@@ -61,6 +69,7 @@ var App = function () {
     };
 
     this.OnTableGridLoaded = function (data) {
+        console.log(data);
         this.table.datagrid('selectRow', 0);
     };
 
@@ -84,7 +93,10 @@ var App = function () {
     this.OnAddButtonClick = function () {
         $('.dialog-add').show();
         $('.dialog-bg').show();
-        $('.option input').val("")
+        $('.option i').hide();
+        $('.option input').val("");
+        $('.option input').css('borderColor','#53556c');
+        $('#add-switch').addClass('switch-on')
     };
 
     this.AddDialogHide = function () {
@@ -97,8 +109,12 @@ var App = function () {
         $('.dialog-bg').show();
 
         var selected = this.table.datagrid('getSelected');
-        $('#edit-name').attr("value",selected.name);
-        $('#edit-password').attr("value",selected.password);
+        $('#code').val(selected.code);
+        $('#edit-department').val(selected.department);
+        $('#edit-login-name').val(selected.loginName);
+        $('#edit-real-name').val(selected.realName);
+        $('#edit-password').val(selected.loginPassword);
+        $('#edit-role').val(selected.role);
         if (selected.enabled === 1)
             $('#edit-switch').addClass('switch-on');
         else
@@ -115,17 +131,101 @@ var App = function () {
     };
 
     this.AddUser = function () {
-        this.AddDialogHide();
+        var department = $('#department').val().trim();
+        var loginName =  $('#login-name').val().trim();
+        var realName =  $('#real-name').val().trim();
+        var loginPassword =  $('#login-password').val().trim();
+        var role =  $('#role').val().trim();
+        if (this.CheckInput(department, loginName, realName, loginPassword, role)){
+            this.AddCaller(department, loginName, realName, loginPassword, role);
+        }
+    };
+
+    this.CheckInput = function (department, loginName, realName, loginPassword, role) {
+        var flag = true;
+        if (department.length === 0){
+            $('.check-department i').show();
+            $('.check-department input').css({ 'borderColor': '#ff2828' });
+            flag = false;
+        } else {
+            $('.check-department i').hide();
+            $('.check-department input').css({ 'borderColor': '#53556c' });
+        }
+
+        if (loginName.length === 0){
+            $('.check-login-name i').text('请输入登录名').show();
+            $('.check-login-name input').css({ 'borderColor': '#ff2828' });
+            flag = false;
+        } else {
+            if (this.IsExistLoginName(loginName) >= 1){
+                $('.check-login-name i').text('登录名重复').show();
+                $('.check-login-name input').css({ 'borderColor': '#ff2828' });
+                flag = false;
+            } else {
+                $('.check-login-name i').hide();
+                $('.check-login-name input').css({ 'borderColor': '#53556c' });
+            }
+        }
+
+        if (realName.length === 0){
+            $('.check-real-name i').show();
+            $('.check-real-name input').css({ 'borderColor': '#ff2828' });
+            flag = false;
+        } else {
+            $('.check-real-name i').hide();
+            $('.check-real-name input').css({ 'borderColor': '#53556c' });
+        }
+
+        if (loginPassword.length === 0){
+            $('.check-password i').show();
+            $('.check-password input').css({ 'borderColor': '#ff2828' });
+            flag = false;
+        } else {
+            $('.check-password i').hide();
+            $('.check-password input').css({ 'borderColor': '#53556c' });
+        }
+
+        if (role.length === 0){
+            $('.check-role i').show();
+            $('.check-role input').css({ 'borderColor': '#ff2828' });
+            flag = false;
+        } else {
+            $('.check-role i').hide();
+            $('.check-role input').css({ 'borderColor': '#53556c' });
+        }
+
+        return flag
+    };
+
+    this.IsExistLoginName = function (name) {
+        var value = null;
+        $.ajax({
+            type: 'post',
+            url: 'caller/isExistLoginName',
+            data: {loginName: name},
+            async: false,
+            success: function (result) {
+                value = result;
+            }
+        });
+        return value;
+    };
+
+    this.AddCaller = function (department, loginName, realName, loginPassword, role) {
         $.ajax({
             type: "POST",
             dataType: 'json',
             data: {
-                name: $('#add-name').val(),
-                password: $('#add-password').val(),
+                department: department,
+                loginName: loginName,
+                realName: realName,
+                loginPassword: loginPassword,
+                role: role,
                 enabled: $('#add-switch').hasClass('switch-on') ? 1 : 0
             },
-            url: 'user/insert',
-            success: function (result) {
+            url: 'caller/addCaller',
+            success: function () {
+                this.AddDialogHide();
                 this.ReloadData();
             }.bind(this)
         });
@@ -137,31 +237,46 @@ var App = function () {
             type: "POST",
             dataType: 'json',
             data: {
-                id: this.table.datagrid('getSelected').id,
-                name: $('#edit-name').val(),
-                password: $('#edit-password').val(),
+                code: this.table.datagrid('getSelected').code,
+                department: $('#edit-department').val(),
+                loginName: $('#edit-login-name').val(),
+                realName: $('#edit-real-name').val(),
+                loginPassword: $('#edit-password').val(),
+                role: $('#edit-role').val(),
                 enabled: $('#edit-switch').hasClass('switch-on') ? 1 : 0
             },
-            url: 'user/updateById',
-            success: function (result) {
+            url: 'caller/updateCaller',
+            success: function () {
                 this.ReloadData();
             }.bind(this)
         });
     };
 
     this.OnDeleteButtonClick = function () {
+        $('.dialog-delete').show();
+        $('.dialog-bg').show();
+        $('#hint-txt').text(this.table.datagrid('getSelected').loginName)
+    };
+
+    this.DeleteDialogHide = function () {
+        $('.dialog-delete').hide();
+        $('.dialog-bg').hide();
+    };
+
+    this.DeleteUser = function () {
+        this.DeleteDialogHide();
         $.ajax({
             type: "POST",
             dataType: 'json',
-            url: 'user/delete',
             data: {
-                id: this.table.datagrid('getSelected').id
+                code: this.table.datagrid('getSelected').code,
             },
-            success: function (result) {
+            url: 'caller/deleteCaller',
+            success: function () {
                 this.ReloadData();
             }.bind(this)
         });
-    };
+    }
 };
 
 $(document).ready(function () {

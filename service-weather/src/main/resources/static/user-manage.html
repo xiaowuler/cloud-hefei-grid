@@ -72,17 +72,38 @@
         <button class="close" id="add-close"></button>
         <div class="dialog-detail">
             <div class="clearfix">
-                <div class="option option-name fl">
-                    <label>用户名 *</label>
-                    <input type="text" name="name" id="add-name" placeholder="请输入用户名">
+                <div class="option check-department fl">
+                    <label>部门 *</label>
+                    <input type="text" id="department" placeholder="请输入部门">
+                    <i>请输入部门</i>
                 </div>
-                <div class="option option-number fl">
-                    <label>密码 * </label>
-                    <input type="password" name="password" id="add-password" placeholder="请输入密码">
+                <div class="option check-login-name fr">
+                    <label>登录名 * </label>
+                    <input type="text" id="login-name" placeholder="请输入登录名">
+                    <i>请输入登录名</i>
                 </div>
-                <div class="switch" id="add-switch">
-                    启用<a href="javascript:;"></a>
+            </div>
+            <div class="clearfix">
+                <div class="option check-real-name fl">
+                    <label>真实姓名 *</label>
+                    <input type="text" id="real-name" placeholder="请输入真实姓名">
+                    <i>请输入真实姓名</i>
                 </div>
+                <div class="option check-password fr">
+                    <label>登录密码 * </label>
+                    <input type="password" id="login-password" placeholder="请输入登录密码">
+                    <i>请输入登录密码</i>
+                </div>
+            </div>
+            <div class="clearfix">
+                <div class="option check-role fl">
+                    <label>角色 *</label>
+                    <input type="text" id="role" placeholder="请输入角色">
+                    <i>请输入角色</i>
+                </div>
+            </div>
+            <div class="switch switch-on" id="add-switch">
+                启用<a href="javascript:;"></a>
             </div>
             <div class="button-group">
                 <button class="sure" id="add-sure">确定</button>
@@ -95,21 +116,57 @@
         <button class="close" id="edit-close"></button>
         <div class="dialog-detail">
             <div class="clearfix">
-                <div class="option option-name fl">
-                    <label>用户名 *</label>
-                    <input type="text" name="name" id="edit-name">
+                <div class="option option-code fl">
+                    <label>编号 *</label>
+                    <input type="text" id="code" readonly>
                 </div>
-                <div class="option option-number fl">
-                    <label>密码 * </label>
-                    <input type="text" name="number" id="edit-password">
+                <div class="option option-department fr">
+                    <label>部门 * </label>
+                    <input type="text" id="edit-department" placeholder="请输入部门">
+                    <i>请输入部门</i>
                 </div>
-                <div class="switch switch-on" id="edit-switch">
-                    启用<a href="javascript:;"></a>
+            </div>
+            <div class="clearfix">
+                <div class="option option-login-name fl">
+                    <label>登录名 *</label>
+                    <input type="text" id="edit-login-name" placeholder="请输入登录名">
+                    <i>请输入登录名</i>
                 </div>
+                <div class="option option-real-name fr">
+                    <label>真实姓名 * </label>
+                    <input type="text" id="edit-real-name" placeholder="请输入真实姓名">
+                    <i>请输入真实姓名</i>
+                </div>
+            </div>
+            <div class="clearfix">
+                <div class="option option-password fl">
+                    <label>登录密码 *</label>
+                    <input type="text" id="edit-password" placeholder="请输入登录密码">
+                    <i>请输入登录密码</i>
+                </div>
+                <div class="option option-role fr">
+                    <label>角色 * </label>
+                    <input type="text" id="edit-role" placeholder="请输入角色">
+                    <i>请输入角色</i>
+                </div>
+            </div>
+            <div class="switch switch-on" id="edit-switch">
+                启用<a href="javascript:;"></a>
             </div>
             <div class="button-group">
                 <button class="sure" id="edit-sure">确定</button>
                 <button class="quit" id="edit-quit">取消</button>
+            </div>
+        </div>
+    </div>
+    <div class="dialog dialog-delete bg">
+        <h2>修改</h2>
+        <button class="close" id="delete-close"></button>
+        <div class="dialog-detail">
+            <h3>确定删除登录名为「<span id="hint-txt"></span>」的用户吗？</h3>
+            <div class="button-group">
+                <button class="sure" id="delete-sure">确定</button>
+                <button class="quit" id="delete-quit">取消</button>
             </div>
         </div>
 

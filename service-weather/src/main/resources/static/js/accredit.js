@@ -1,5 +1,7 @@
 var App = function () {
+    this.filtrateIds = [];
     this.table = $('#accredit-table');
+    this.filtrateGrid = $("#filtrate-table");
 
     this.Startup = function () {
         this.ReLayout();
@@ -62,7 +64,7 @@ var App = function () {
     };
 
     this.InitFiltrateGrid = function () {
-        $('#filtrate-table').datagrid({
+        this.filtrateGrid.datagrid({
             columns: [[
                 { field: 'id', checkbox: true, align: 'center', width: 30 },
                 { field: 'name', title: '名称', align: 'center', width: 324 },
@@ -108,7 +110,7 @@ var App = function () {
                         "explain": data[i].explain
                     });
                 }
-                $('#filtrate-table').datagrid('loadData', values);
+                this.filtrateGrid.datagrid('loadData', values);
             }.bind(this)
         });
     };
@@ -118,8 +120,8 @@ var App = function () {
         $('.dialog-bg').show();
         $('#dialog-title').text('添加')
         $('#add-name').val(this.table.datagrid('getSelected').loginName);
-        $("#filtrate-table").datagrid("resize");
-        $("#filtrate-table").datagrid('clearSelections');
+        this.filtrateGrid.datagrid("resize");
+        this.filtrateGrid.datagrid('clearSelections');
     };
 
     this.AddDialogHide = function () {
@@ -131,7 +133,7 @@ var App = function () {
         var ids = [];
         this.AddDialogHide();
         var row = this.table.datagrid('getSelected');
-        var rows = $('#filtrate-table').datagrid('getSelections');
+        var rows = this.filtrateGrid.datagrid('getSelections');
         for (var i = 0; i < rows.length; i++) {
             ids.push(rows[i].id);
         }
@@ -161,35 +163,41 @@ var App = function () {
     };
 
     this.OnEditButtonClick = function () {
-        // $('.dialog-edit').show();
-        // $('.dialog-bg').show();
-        // var selected = this.table.datagrid('getSelected');
-        // $('#edit-name').attr("value",selected.name);
-        // $('#edit-number').attr("value",selected.code);
-        // $('#edit-key').attr("value",selected.key);
-        // if (selected.enabled === 1)
-        //     $('#edit-switch').addClass('switch-on');
-        // else
-        //     $('#edit-switch').removeClass('switch-on');
+        var selected = this.table.datagrid('getSelected');
+        this.filtrateGrid.datagrid('clearSelections');
+        this.GetFiltrateData(selected);
+
         $('.dialog-add').show();
         $('.dialog-bg').show();
         $('#dialog-title').text('修改');
-        var selected = this.table.datagrid('getSelected');
-        var index = this.table.datagrid('getRowIndex',selected);
+        this.filtrateGrid.datagrid("resize");
         $('#add-name').val(selected.loginName);
-        var row = $("#accredit-table").datagrid('getRows')[index];
 
-        $("#filtrate-table").datagrid("resize");
-        var rows = $("#filtrate-table").datagrid("getRows");
+        var rows = this.filtrateGrid.datagrid("getRows");
         for (var i = 0; i < rows.length; i++) {
-            var rowId = rows[i].Id;
+            var rowId = rows[i].id;
             for (var j = 0; j < this.filtrateIds.length; j++) {
                 if (rowId === this.filtrateIds[j]) {
-                    var index = $("#filtrate-table").datagrid("getRowIndex", rows[i]);
-                    $("#filtrate-table").datagrid("checkRow", index);
+                    var index = this.filtrateGrid.datagrid("getRowIndex", rows[i]);
+                    this.filtrateGrid.datagrid("checkRow", index);
                 }
             }
         }
+    };
+
+    this.GetFiltrateData = function (row) {
+        $.ajax({
+            type: "POST",
+            dataType: 'json',
+            async: false,
+            data: {
+                code: row.code
+            },
+            url: 'callerInterface/findInterfaceIdByCode',
+            success: function (data) {
+                this.filtrateIds = data;
+            }.bind(this)
+        });
     };
 
     this.EditDialogHide = function () {

@@ -222,6 +222,7 @@
 .option label{
     margin-bottom: 8px;
     display: block;
+    font-size: 14px;
 }
 
 .option input{
@@ -258,15 +259,12 @@
     background: url("../images/icon-fail.png") no-repeat 0 5px;
 }
 
-.switch {
-    float: right;
-}
-
 .switch a{
     width: 36px;
     height: 23px;
-    margin-top: 15px;
+    margin-left: 5px;
     position: relative;
+    display: inline-block;
     -webkit-border-radius: 80px;
     -moz-border-radius: 80px;
     border-radius: 80px;
