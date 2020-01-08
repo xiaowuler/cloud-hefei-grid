@@ -58,4 +58,9 @@ public class CallerController {
     public void deleteCaller(String code){
         callerService.deleteCaller(code);
     }
+
+    @PostMapping("isExistLoginName")
+    public int isExistLoginName(String loginName){
+        return callerService.isExistLoginName(loginName);
+    }
 }

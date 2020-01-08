@@ -61,4 +61,9 @@ public class CallerServiceImpl implements CallerService {
         callerMapper.deleteCaller(code);
         callerInterfaceMapper.deleteCallerInterface(code);
     }
+
+    @Override
+    public int isExistLoginName(String loginName) {
+        return callerMapper.isExistLoginName(loginName);
+    }
 }

@@ -33,4 +33,7 @@ public interface CallerService {
 
     @RequestMapping(value = "caller/deleteCaller", method = RequestMethod.POST)
     void deleteCaller(@RequestParam String code);
+
+    @RequestMapping(value = "caller/isExistLoginName", method = RequestMethod.POST)
+    int isExistLoginName(@RequestParam String loginName);
 }

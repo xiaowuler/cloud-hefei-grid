@@ -47,4 +47,8 @@
     <delete id = "deleteCaller">
         delete from callers where `code` = #{code}
     </delete>
+
+    <select id = "isExistLoginName" resultType = "int">
+        select count(1) from callers where login_name = #{loginName}
+    </select>
 </mapper>

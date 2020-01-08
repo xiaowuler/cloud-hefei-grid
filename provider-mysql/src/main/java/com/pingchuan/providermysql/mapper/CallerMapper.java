@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface CallerMapper {
+
     Caller findOneByUsernameAndPassword(@Param("username") String username, @Param("password") String password);
     List<Caller> findDepartment();
     List<CallerDTO> findCallerAuthorizationInfo(@Param("page") int page, @Param("rows") int rows);
@@ -17,4 +18,5 @@ public interface CallerMapper {
     void addCaller(@Param("caller") Caller caller);
     void updateCaller(@Param("caller") Caller caller);
     void deleteCaller(@Param("code") String code);
+    int isExistLoginName(@Param("loginName") String loginName);
 }
