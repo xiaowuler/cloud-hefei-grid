@@ -8,7 +8,6 @@ var App = function () {
         $('#add').on('click', this.OnAddButtonClick.bind(this));
         $('#edit').on('click', this.OnEditButtonClick.bind(this));
         $('#delete').on('click', this.OnDeleteButtonClick.bind(this));
-
         window.onresize = this.ReLayout.bind(this);
     };
 
@@ -104,9 +103,47 @@ var App = function () {
         var loginPassword =  $('#login-password').val().trim();
         var role =  $('#role').val().trim();
 
-        if (this.CheckInput(department, loginName, realName, loginPassword, role)){
+        if (this.CheckAddInput(department, loginName, realName, loginPassword, role)){
             this.Add(department, loginName, realName, loginPassword, role);
         }
+    };
+
+    this.CheckAddInput = function (department, loginName, realName, loginPassword, role) {
+        var flag = true;
+        var loginNameError = $('.check-login-name i');
+        var loginNameInput = $('.check-login-name input');
+
+        flag = this.CheckCommonInput(department, realName, loginPassword, role);
+
+        if (loginName.length === 0){
+            loginNameError.text('请输入登录名').show();
+            this.SetWarnFontColor(loginNameInput);
+            flag = false;
+        } else {
+            if (this.IsExistLoginName(loginName) >= 1){
+                loginNameError.text('登录名重复').show();
+                this.SetWarnFontColor(loginNameInput);
+                flag = false;
+            } else {
+                loginNameError.hide();
+                this.SetDefaultFontColor(loginNameInput);
+            }
+        }
+        return flag
+    };
+
+    this.IsExistLoginName = function (name) {
+        var value = null;
+        $.ajax({
+            type: 'post',
+            url: '/caller/isExistLoginName',
+            data: {loginName: name},
+            async: false,
+            success: function (result) {
+                value = result;
+            }
+        });
+        return value;
     };
 
     this.Add = function (department, loginName, realName, loginPassword, role) {
@@ -172,68 +209,48 @@ var App = function () {
         $(event.target).parent().toggleClass('switch-on');
     };
 
-    this.CheckInput = function (department, loginName, realName, loginPassword, role) {
+    this.EditCaller = function () {
+        var code = this.table.datagrid('getSelected').code
+        var department = $('#edit-department').val();
+        var loginName = $('#edit-login-name').val();
+        var realName = $('#edit-real-name').val();
+        var loginPassword = $('#edit-password').val();
+        var role = $('#edit-role').val();
+        if (this.CheckUpdateInput(code, department, loginName, realName, loginPassword, role))
+            this.Edit(code, department, loginName, realName, loginPassword, role);
+
+    };
+
+    this.CheckUpdateInput = function (code, department, loginName, realName, loginPassword, role) {
         var flag = true;
-        if (department.length === 0){
-            $('.check-department i').show();
-            $('.check-department input').css({ 'borderColor': '#ff2828' });
-            flag = false;
-        } else {
-            $('.check-department i').hide();
-            $('.check-department input').css({ 'borderColor': '#53556c' });
-        }
+        var loginNameError = $('.check-login-name i');
+        var loginNameInput = $('.check-login-name input');
+
+        flag = this.CheckCommonInput(department, realName, loginPassword, role);
 
         if (loginName.length === 0){
-            $('.check-login-name i').text('请输入登录名').show();
-            $('.check-login-name input').css({ 'borderColor': '#ff2828' });
+            loginNameError.text('请输入登录名').show();
+            this.SetWarnFontColor(loginNameInput);
             flag = false;
         } else {
-            if (this.IsExistLoginName(loginName) >= 1){
-                $('.check-login-name i').text('登录名重复').show();
-                $('.check-login-name input').css({ 'borderColor': '#ff2828' });
+            if (this.isExistLoginNameByUpdate(code, loginName) >= 1){
+                loginNameError.text('登录名重复').show();
+                this.SetWarnFontColor(loginNameInput);
                 flag = false;
             } else {
-                $('.check-login-name i').hide();
-                $('.check-login-name input').css({ 'borderColor': '#53556c' });
+                loginNameError.hide();
+                this.SetDefaultFontColor(loginNameInput);
             }
         }
-
-        if (realName.length === 0){
-            $('.check-real-name i').show();
-            $('.check-real-name input').css({ 'borderColor': '#ff2828' });
-            flag = false;
-        } else {
-            $('.check-real-name i').hide();
-            $('.check-real-name input').css({ 'borderColor': '#53556c' });
-        }
-
-        if (loginPassword.length === 0){
-            $('.check-password i').show();
-            $('.check-password input').css({ 'borderColor': '#ff2828' });
-            flag = false;
-        } else {
-            $('.check-password i').hide();
-            $('.check-password input').css({ 'borderColor': '#53556c' });
-        }
-
-        if (role.length === 0){
-            $('.check-role i').show();
-            $('.check-role input').css({ 'borderColor': '#ff2828' });
-            flag = false;
-        } else {
-            $('.check-role i').hide();
-            $('.check-role input').css({ 'borderColor': '#53556c' });
-        }
-
         return flag
     };
 
-    this.IsExistLoginName = function (name) {
+    this.isExistLoginNameByUpdate = function (code, loginName) {
         var value = null;
         $.ajax({
             type: 'post',
-            url: 'caller/isExistLoginName',
-            data: {loginName: name},
+            url: '/caller/isExistLoginNameByUpdate',
+            data: {code: code, loginName: loginName},
             async: false,
             success: function (result) {
                 value = result;
@@ -242,18 +259,18 @@ var App = function () {
         return value;
     };
 
-    this.EditCaller = function () {
+    this.Edit = function (code, department, loginName, realName, loginPassword, role) {
         $.ajax({
             type: 'post',
             url: '/caller/updateCaller',
             dataType: 'json',
             data: {
-                code: this.table.datagrid('getSelected').code,
-                department: $('#edit-department').val(),
-                loginName: $('#edit-login-name').val(),
-                realName: $('#edit-real-name').val(),
-                loginPassword: $('#edit-password').val(),
-                role: $('#edit-role').val(),
+                code: code,
+                department: department,
+                loginName: loginName,
+                realName: realName,
+                loginPassword: loginPassword,
+                role: role,
                 enabled: $('#edit-switch').hasClass('switch-on') ? 1 : 0
             },
             success: function () {
@@ -261,6 +278,66 @@ var App = function () {
                 this.ReloadData();
             }.bind(this)
         });
+    };
+
+    this.CheckCommonInput = function (department, realName, loginPassword, role) {
+        var flag = true;
+
+        var departmentError = $('.check-department i');
+        var realNameError = $('.check-real-name i');
+        var passwordError = $('.check-password i');
+        var roleError = $('.check-role i');
+
+        var departmentInput = $('.check-department input');
+        var realNameInput = $('.check-real-name input');
+        var passwordInput = $('.check-password input');
+        var roleInput = $('.check-role input');
+
+        if (department.length === 0){
+            departmentError.show();
+            this.SetWarnFontColor(departmentInput);
+            flag = false;
+        } else {
+            departmentError.hide();
+            this.SetDefaultFontColor(departmentInput);
+        }
+
+        if (realName.length === 0){
+            realNameError.show();
+            this.SetWarnFontColor(realNameInput);
+            flag = false;
+        } else {
+            realNameError.hide();
+            this.SetDefaultFontColor(realNameInput);
+        }
+
+        if (loginPassword.length === 0){
+            passwordError.show();
+            this.SetWarnFontColor(passwordInput);
+            flag = false;
+        } else {
+            passwordError.hide();
+            this.SetDefaultFontColor(passwordInput);
+        }
+
+        if (role.length === 0){
+            roleError.show();
+            this.SetWarnFontColor(roleInput);
+            flag = false;
+        } else {
+            roleError.hide();
+            this.SetDefaultFontColor(roleInput);
+        }
+
+        return flag;
+    };
+
+    this.SetWarnFontColor = function (element) {
+        element.css('borderColor','#ff2828');
+    };
+
+    this.SetDefaultFontColor = function (element) {
+        element.css('borderColor','#53556c');
     };
 
     this.OnDeleteButtonClick = function () {

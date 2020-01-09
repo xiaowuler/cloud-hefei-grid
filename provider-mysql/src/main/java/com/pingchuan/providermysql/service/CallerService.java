@@ -17,4 +17,5 @@ public interface CallerService {
     void updateCaller(Caller caller);
     void deleteCaller(String code);
     int isExistLoginName(String loginName);
+    int isExistLoginNameByUpdate(String code, String loginName);
 }

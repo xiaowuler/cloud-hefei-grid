@@ -40,4 +40,7 @@ public interface CallerService {
 
     @RequestMapping(value = "caller/isExistLoginName", method = RequestMethod.POST)
     int isExistLoginName(@RequestParam String loginName);
+
+    @RequestMapping(value = "caller/isExistLoginNameByUpdate", method = RequestMethod.POST)
+    int isExistLoginNameByUpdate(@RequestParam String code, @RequestParam String loginName);
 }

@@ -67,4 +67,8 @@
     <select id = "isExistLoginName" resultType = "int">
         select count(1) from callers where login_name = #{loginName}
     </select>
+
+    <select id = "isExistLoginNameByUpdate" resultType = "int">
+        select count(1) from callers where `code` not in(#{code}) and login_name = #{loginName}
+    </select>
 </mapper>

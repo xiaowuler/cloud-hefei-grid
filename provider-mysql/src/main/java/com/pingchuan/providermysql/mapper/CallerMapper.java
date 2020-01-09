@@ -22,4 +22,5 @@ public interface CallerMapper {
     void updateCaller(@Param("caller") Caller caller);
     void deleteCaller(@Param("code") String code);
     int isExistLoginName(@Param("loginName") String loginName);
+    int isExistLoginNameByUpdate(@Param("code") String code, @Param("loginName") String loginName);
 }

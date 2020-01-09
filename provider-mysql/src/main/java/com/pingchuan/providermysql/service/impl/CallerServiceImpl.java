@@ -78,4 +78,9 @@ public class CallerServiceImpl implements CallerService {
     public int isExistLoginName(String loginName) {
         return callerMapper.isExistLoginName(loginName);
     }
+
+    @Override
+    public int isExistLoginNameByUpdate(String code, String loginName) {
+        return callerMapper.isExistLoginNameByUpdate(code, loginName);
+    }
 }

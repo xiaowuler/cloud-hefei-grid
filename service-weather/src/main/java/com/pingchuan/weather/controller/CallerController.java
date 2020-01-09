@@ -69,4 +69,9 @@ public class CallerController {
     public int isExistLoginName(String loginName){
         return callerService.isExistLoginName(loginName);
     }
+
+    @PostMapping("isExistLoginNameByUpdate")
+    public int isExistLoginNameByUpdate(String code, String loginName){
+        return callerService.isExistLoginNameByUpdate(code, loginName);
+    }
 }
