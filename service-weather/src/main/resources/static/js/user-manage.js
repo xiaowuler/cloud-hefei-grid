@@ -69,7 +69,6 @@ var App = function () {
     };
 
     this.OnTableGridLoaded = function (data) {
-        console.log(data);
         this.table.datagrid('selectRow', 0);
     };
 

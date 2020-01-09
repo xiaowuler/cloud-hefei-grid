@@ -12,6 +12,7 @@ public interface CallerMapper {
 
     Caller findOneByUsernameAndPassword(@Param("username") String username, @Param("password") String password);
     List<Caller> findDepartment();
+    List<Caller> findCodeAndLoginName();
     int findCallerAuthorizationCount();
     List<CallerDTO> findCallerAuthorizationInfo(@Param("page") int page, @Param("rows") int rows);
     int findTotalCount();

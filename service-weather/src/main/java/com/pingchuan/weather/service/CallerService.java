@@ -17,6 +17,9 @@ public interface CallerService {
     @PostMapping("caller/findDepartment")
     List<Caller> findDepartment();
 
+    @PostMapping("caller/findCodeAndLoginName")
+    List<Caller> findCodeAndLoginName();
+
     @PostMapping("caller/findCallerAuthorizationInfo")
     PageResult<CallerDTO> findCallerAuthorizationInfo(@RequestParam int page, @RequestParam int rows);
 

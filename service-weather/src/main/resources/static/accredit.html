@@ -66,13 +66,13 @@
             </div>
         </div>
     </div>
-    <div class="dialog dialog-add bg">
-        <h2 id="dialog-title">添加</h2>
-        <button class="close" id="add-close"></button>
+    <div class="dialog dialog-common bg">
+        <h2 id="dialog-title"></h2>
+        <button class="close"></button>
         <div class="dialog-detail">
             <div class="option option-name">
                 <label>用户名 *</label>
-                <input type="text" name="name" id="add-name" readonly placeholder="请输入用户名">
+                <select id="login-name" class="easyui-combobox" name="login-name"></select>
             </div>
             <div class="option option-filtrate">
                 <label>接口筛选 *</label>
@@ -81,41 +81,11 @@
                 </div>
             </div>
             <div class="button-group">
-                <button class="sure" id="add-sure">确定</button>
-                <button class="quit" id="add-quit">取消</button>
+                <button class="sure">确定</button>
+                <button class="cancel">取消</button>
             </div>
         </div>
     </div>
-    <!--<div class="dialog dialog-edit bg">
-        <h2>修改</h2>
-        <button class="close" id="edit-close"></button>
-        <div class="dialog-detail">
-            <div class="clearfix">
-                <div class="option option-name fl">
-                    <label>名称 *</label>
-                    <input type="text" name="name" id="edit-name" value="短信发送平台">
-                </div>
-                <div class="option option-number fl">
-                    <label>编号 * </label>
-                    <input type="text" name="number" id="edit-number" disabled value="Send011">
-                </div>
-                <div class="switch" id="edit-switch">
-                    启用<a href="javascript:;"></a>
-                </div>
-            </div>
-            <div class="clearfix">
-                <div class="option option-key fl">
-                    <label>密钥 *</label>
-                    <input type="text" name="key" id="edit-key" disabled value="AQ20A1D9FCF03219EBQ95861181A">
-                </div>
-                <button class="create-key" id="edit-create">生成密钥</button>
-            </div>
-            <div class="button-group">
-                <button class="sure" id="edit-sure">确定</button>
-                <button class="quit" id="edit-quit">取消</button>
-            </div>
-        </div>
-    </div>-->
     <div class="dialog-bg"></div>
 </div>
 </body>

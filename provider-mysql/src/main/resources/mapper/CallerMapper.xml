@@ -9,6 +9,10 @@
         select distinct(department) from callers
     </select>
 
+    <select id = "findCodeAndLoginName" resultType = "com.pingchuan.domain.Caller">
+        select `code`, login_name as loginName from callers
+    </select>
+
     <select id = "findCallerAuthorizationCount" resultType = "int">
         select count(*) from (select ci.caller_code
 		from caller_interfaces ci

@@ -26,6 +26,11 @@ public class CallerController {
         return callerService.findDepartment();
     }
 
+    @PostMapping("findCodeAndLoginName")
+    List<Caller> findCodeAndLoginName(){
+        return callerService.findCodeAndLoginName();
+    }
+
     @PostMapping("findCallerAuthorizationInfo")
     public PageResult<CallerDTO> findCallerAuthorizationInfo(int page, int rows){
         return callerService.findCallerAuthorizationInfo(page, rows);

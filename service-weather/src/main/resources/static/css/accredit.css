@@ -20,7 +20,7 @@
     border-right: 0;
 }
 
-.dialog-add{
+.dialog-common{
     width: 700px;
     height: 500px;
     margin: -250px 0 0 -350px;
@@ -70,4 +70,17 @@
 
 .filtrate-table .datagrid-body td:last-child .datagrid-cell{
     text-align: left!important;
+}
+
+.combobox-item{
+    text-align: center;
+}
+
+.option .combo-arrow{
+    background: url("../images/drop-down.png") no-repeat 8px center;
+}
+
+.button-group button.cancel{
+    background: #53556c;
+    border: 1px solid #53556c;
 }

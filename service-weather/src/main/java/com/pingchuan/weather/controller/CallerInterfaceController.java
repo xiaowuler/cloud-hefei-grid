@@ -1,13 +1,13 @@
 package com.pingchuan.weather.controller;
 
+import java.util.List;
 import com.pingchuan.weather.service.CallerInterfaceService;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("callerInterface")
@@ -22,7 +22,7 @@ public class CallerInterfaceController {
     }
 
     @PostMapping("updateCallerInterface")
-    public void updateCallerInterface(@RequestParam String code, @RequestParam Integer[] interfaceIds){
+    public void updateCallerInterface(@RequestParam(name = "code") String code, @RequestParam(name = "interfaceIds[]") Integer[] interfaceIds){
         callerInterfaceService.updateCallerInterface(code, interfaceIds);
     }
 

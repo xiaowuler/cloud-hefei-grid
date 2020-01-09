@@ -10,36 +10,14 @@ var App = function () {
         this.InitFiltrateGrid();
         this.ReloadFiltrateData();
         $('#add').on('click', this.OnAddButtonClick.bind(this));
-        $('#add-close').on('click', this.AddDialogHide.bind(this));
-        $('#add-sure').on('click', this.AddData.bind(this));
-        $('#add-quit').on('click', this.AddDialogHide.bind(this));
-        $('#add-switch a').on('click', this.OnSwitchButtonClick.bind(this));
-        $('#add-create-key').on('click', this.AddDialogCreateKey.bind(this));
-
         $('#edit').on('click', this.OnEditButtonClick.bind(this));
-        $('#edit-close').on('click', this.EditDialogHide.bind(this));
-        $('#edit-sure').on('click', this.InsertData.bind(this));
-        $('#edit-quit').on('click', this.EditDialogHide.bind(this));
-        $('#edit-switch a').on('click', this.OnSwitchButtonClick.bind(this));
         window.onresize = this.ReLayout.bind(this);
-
     };
 
     this.ReLayout = function () {
         var height = $(window).height();
         $('.aside').height(height - 70);
         $('.accredit-table').height(height - 130);
-    };
-
-    this.ReloadData = function () {
-        this.table.datagrid({
-            method: "POST",
-            url: 'caller/findCallerAuthorizationInfo',
-            queryParams: {
-                page: 1,
-                rows: 10
-            }
-        });
     };
 
     this.InitPortGrid = function () {
@@ -63,6 +41,30 @@ var App = function () {
         });
     };
 
+    this.OnTableGridBeforeLoad = function () {
+        this.table.datagrid('getPager').pagination({
+            beforePageText: '第',
+            afterPageText: '页&nbsp;&nbsp;&nbsp;共{pages}页',
+            displayMsg: '当前显示{from}-{to}条记录&nbsp;&nbsp;&nbsp;共{total}条记录',
+            layout: ['list', 'sep', 'first', 'prev', 'sep', 'manual', 'sep', 'next', 'last', 'sep', 'refresh', 'info']
+        });
+    };
+
+    this.OnTableGridLoaded = function (data) {
+        this.table.datagrid('selectRow', 0);
+    };
+
+    this.ReloadData = function () {
+        this.table.datagrid({
+            method: "POST",
+            url: '/caller/findCallerAuthorizationInfo',
+            queryParams: {
+                page: 1,
+                rows: 10
+            }
+        });
+    };
+
     this.InitFiltrateGrid = function () {
         this.filtrateGrid.datagrid({
             columns: [[
@@ -74,24 +76,7 @@ var App = function () {
             singleSelect: false,
             fitColumns: true,
             fit: true,
-            scrollbarSize: 0,
-            onLoadSuccess: function () {
-
-            }
-        });
-    };
-
-    this.OnTableGridLoaded = function (data) {
-        console.log(data);
-        this.table.datagrid('selectRow', 0);
-    };
-
-    this.OnTableGridBeforeLoad = function () {
-        this.table.datagrid('getPager').pagination({
-            beforePageText: '第',
-            afterPageText: '页&nbsp;&nbsp;&nbsp;共{pages}页',
-            displayMsg: '当前显示{from}-{to}条记录&nbsp;&nbsp;&nbsp;共{total}条记录',
-            layout: ['list', 'sep', 'first', 'prev', 'sep', 'manual', 'sep', 'next', 'last', 'sep', 'refresh', 'info']
+            scrollbarSize: 0
         });
     };
 
@@ -100,7 +85,7 @@ var App = function () {
             type: "POST",
             dataType: 'json',
             async: false,
-            url: 'interface/getInterfaces',
+            url: '/interface/getInterfaces',
             success: function (data) {
                 var values = [];
                 for (var i = 0; i < data.length; i++) {
@@ -116,62 +101,75 @@ var App = function () {
     };
 
     this.OnAddButtonClick = function () {
-        $('.dialog-add').show();
+        this.SettingAddDialog();
+        this.SettingAddAttrAndEvent();
+    };
+
+    this.SettingAddDialog = function () {
+        $('.dialog-common').show();
         $('.dialog-bg').show();
         $('#dialog-title').text('添加')
-        $('#add-name').val(this.table.datagrid('getSelected').loginName);
+        this.InitLoginName();
         this.filtrateGrid.datagrid("resize");
         this.filtrateGrid.datagrid('clearSelections');
     };
 
-    this.AddDialogHide = function () {
-        $('.dialog-add').hide();
-        $('.dialog-bg').hide();
+    this.SettingAddAttrAndEvent = function () {
+        $('.sure').attr('id', 'add-sure');
+        $('.cancel').attr('id', 'add-cancel');
+        $('.close').attr('id', 'add-close');
+
+        $('#add-sure').on('click', this.AddCallerInterfaces.bind(this));
+        $('#add-cancel').on('click', this.DialogCommonClose.bind(this));
+        $('#add-close').on('click', this.DialogCommonClose.bind(this));
     };
 
-    this.AddData = function () {
-        var ids = [];
-        this.AddDialogHide();
-        var row = this.table.datagrid('getSelected');
-        var rows = this.filtrateGrid.datagrid('getSelections');
-        for (var i = 0; i < rows.length; i++) {
-            ids.push(rows[i].id);
-        }
+    this.InitLoginName = function () {
+        var $loginName = $('#login-name');
+        $loginName.combobox({
+            method: 'post',
+            url: '/caller/findCodeAndLoginName',
+            valueField: 'code',
+            textField: 'loginName',
+            onLoadSuccess: function (result) {
+                var item = $loginName.combobox('getData');
+                if (item.length > 0) {
+                    $loginName.combobox('select', result[0].loginName);
+                    $loginName.combobox('setValue', result[0].code);
+                }
+            }
+        }).combobox('enable');
+    };
+
+    this.AddCallerInterfaces = function () {
+        var code = $('#login-name').combobox('getValue');
+        var interfaceIds = this.GetInterfaceIds();
         $.ajax({
-            type: "POST",
-            data: {
-                code: row.code,
-                interfaceIds: ids
-            },
+            type: 'post',
             url: '/callerInterface/addCallerInterface',
+            data: {code: code, interfaceIds: interfaceIds},
             success: function () {
                 this.ReloadData();
             }.bind(this)
         });
-    };
-
-    this.AddDialogCreateKey = function () {
-        var uuId = this.CreateUUID();
-        $('#add-key').attr('value', uuId);
-    };
-
-    this.CreateUUID = function () {
-        return 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-            return v.toString(16);
-        });
+        this.DialogCommonClose();
     };
 
     this.OnEditButtonClick = function () {
+        this.SettingUpdateDialog();
+        this.SettingEditAttrAndEvent();
+    };
+
+    this.SettingUpdateDialog = function () {
         var selected = this.table.datagrid('getSelected');
         this.filtrateGrid.datagrid('clearSelections');
         this.GetFiltrateData(selected);
 
-        $('.dialog-add').show();
+        $('.dialog-common').show();
         $('.dialog-bg').show();
         $('#dialog-title').text('修改');
         this.filtrateGrid.datagrid("resize");
-        $('#add-name').val(selected.loginName);
+        $('#login-name').combobox('select', selected.loginName).combobox('disable');
 
         var rows = this.filtrateGrid.datagrid("getRows");
         for (var i = 0; i < rows.length; i++) {
@@ -190,41 +188,51 @@ var App = function () {
             type: "POST",
             dataType: 'json',
             async: false,
-            data: {
-                code: row.code
-            },
-            url: 'callerInterface/findInterfaceIdByCode',
+            data: {code: row.code},
+            url: '/callerInterface/findInterfaceIdByCode',
             success: function (data) {
                 this.filtrateIds = data;
             }.bind(this)
         });
     };
 
-    this.EditDialogHide = function () {
-        $('.dialog-edit').hide();
-        $('.dialog-bg').hide();
+    this.SettingEditAttrAndEvent = function () {
+        $('.sure').attr('id', 'edit-sure');
+        $('.cancel').attr('id', 'edit-cancel');
+        $('.close').attr('id', 'edit-close')
+
+        $('#edit-sure').on('click', this.UpdateCallerInterface.bind(this));
+        $('#edit-cancel').on('click', this.DialogCommonClose.bind(this));
+        $('#edit-close').on('click', this.DialogCommonClose.bind(this));
     };
 
-    this.InsertData = function () {
-        this.EditDialogHide();
+    this.UpdateCallerInterface = function () {
+        var selected = this.table.datagrid('getSelected');
+        var code = selected.code;
+        var interfaceIds = this.GetInterfaceIds();
         $.ajax({
-            type: "POST",
-            dataType: 'json',
-            data: {
-                name: $('#edit-name').val(),
-                code: $('#edit-number').val(),
-                key: $('#edit-key').val(),
-                enable: $('#edit-switch').hasClass('switch-on') ? 1 : 0
-            },
-            url: 'caller/update',
-            success: function (result) {
+            type: 'post',
+            url: '/callerInterface/updateCallerInterface',
+            data: {code: code, interfaceIds: interfaceIds},
+            success: function () {
                 this.ReloadData();
             }.bind(this)
         });
+        this.DialogCommonClose();
     };
 
-    this.OnSwitchButtonClick = function (event) {
-        $(event.target).parent().toggleClass('switch-on');
+    this.GetInterfaceIds = function () {
+        var interfaceIds = [];
+        var rows = this.filtrateGrid.datagrid('getSelections');
+        for (var i = 0; i < rows.length; i++) {
+            interfaceIds.push(rows[i].id);
+        }
+        return interfaceIds;
+    };
+
+    this.DialogCommonClose = function () {
+        $('.dialog-common').hide();
+        $('.dialog-bg').hide();
     };
 };
 

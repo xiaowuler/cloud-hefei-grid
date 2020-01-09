@@ -33,6 +33,11 @@ public class CallerServiceImpl implements CallerService {
     }
 
     @Override
+    public List<Caller> findCodeAndLoginName() {
+        return callerMapper.findCodeAndLoginName();
+    }
+
+    @Override
     public PageResult<CallerDTO> findCallerAuthorizationInfo(int page, int rows) {
         PageResult<CallerDTO> pageResult = new PageResult<>();
         pageResult.setTotal(callerMapper.findCallerAuthorizationCount());

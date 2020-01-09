@@ -9,6 +9,7 @@ public interface CallerService {
 
     Caller findOneByUsernameAndPassword(String username, String password);
     List<Caller> findDepartment();
+    List<Caller> findCodeAndLoginName();
     PageResult<CallerDTO> findCallerAuthorizationInfo(int page, int rows);
     PageResult<Caller> findAllByPage(int page, int rows);
     void setCallerEnabled(String code, int isEnabled);
