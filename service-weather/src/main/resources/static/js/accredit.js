@@ -120,8 +120,8 @@ var App = function () {
         $('.close').attr('id', 'add-close');
 
         $('#add-sure').on('click', this.AddCallerInterfaces.bind(this));
-        $('#add-cancel').on('click', this.DialogCommonClose.bind(this));
-        $('#add-close').on('click', this.DialogCommonClose.bind(this));
+        $('#add-cancel').on('click', this.DialogCommonHide.bind(this));
+        $('#add-close').on('click', this.DialogCommonHide.bind(this));
     };
 
     this.InitLoginName = function () {
@@ -152,7 +152,7 @@ var App = function () {
                 this.ReloadData();
             }.bind(this)
         });
-        this.DialogCommonClose();
+        this.DialogCommonHide();
     };
 
     this.OnEditButtonClick = function () {
@@ -202,8 +202,8 @@ var App = function () {
         $('.close').attr('id', 'edit-close')
 
         $('#edit-sure').on('click', this.UpdateCallerInterface.bind(this));
-        $('#edit-cancel').on('click', this.DialogCommonClose.bind(this));
-        $('#edit-close').on('click', this.DialogCommonClose.bind(this));
+        $('#edit-cancel').on('click', this.DialogCommonHide.bind(this));
+        $('#edit-close').on('click', this.DialogCommonHide.bind(this));
     };
 
     this.UpdateCallerInterface = function () {
@@ -218,7 +218,7 @@ var App = function () {
                 this.ReloadData();
             }.bind(this)
         });
-        this.DialogCommonClose();
+        this.DialogCommonHide();
     };
 
     this.GetInterfaceIds = function () {
@@ -230,7 +230,7 @@ var App = function () {
         return interfaceIds;
     };
 
-    this.DialogCommonClose = function () {
+    this.DialogCommonHide = function () {
         $('.dialog-common').hide();
         $('.dialog-bg').hide();
     };

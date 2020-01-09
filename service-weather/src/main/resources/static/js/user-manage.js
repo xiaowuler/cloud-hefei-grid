@@ -5,23 +5,10 @@ var App = function () {
         this.ReLayout();
         this.InitUserGrid();
         this.ReloadData();
-
         $('#add').on('click', this.OnAddButtonClick.bind(this));
-        $('#add-close').on('click', this.AddDialogHide.bind(this));
-        $('#add-sure').on('click', this.AddUser.bind(this));
-        $('#add-quit').on('click', this.AddDialogHide.bind(this));
-        $('#add-switch a').on('click', this.OnSwitchButtonClick.bind(this));
-
         $('#edit').on('click', this.OnEditButtonClick.bind(this));
-        $('#edit-close').on('click', this.EditDialogHide.bind(this));
-        $('#edit-sure').on('click', this.EditUser.bind(this));
-        $('#edit-quit').on('click', this.EditDialogHide.bind(this));
-        $('#edit-switch a').on('click', this.OnSwitchButtonClick.bind(this));
-
         $('#delete').on('click', this.OnDeleteButtonClick.bind(this));
-        $('#delete-close').on('click', this.DeleteDialogHide.bind(this));
-        $('#delete-sure').on('click', this.DeleteUser.bind(this));
-        $('#delete-quit').on('click', this.DeleteDialogHide.bind(this));
+
         window.onresize = this.ReLayout.bind(this);
     };
 
@@ -29,17 +16,6 @@ var App = function () {
         var height = $(window).height();
         $('.aside').height(height - 70);
         $('.user-table').height(height - 130);
-    };
-
-    this.ReloadData = function () {
-        this.table.datagrid({
-            method: "POST",
-            url: 'caller/findAllByPage',
-            queryParams: {
-                page: 1,
-                rows: 10
-            }
-        });
     };
 
     this.InitUserGrid = function () {
@@ -68,6 +44,15 @@ var App = function () {
         });
     };
 
+    this.OnTableGridBeforeLoad = function () {
+        this.table.datagrid('getPager').pagination({
+            beforePageText: '第',
+            afterPageText: '页&nbsp;&nbsp;&nbsp;共{pages}页',
+            displayMsg: '当前显示{from}-{to}条记录&nbsp;&nbsp;&nbsp;共{total}条记录',
+            layout: ['list', 'sep', 'first', 'prev', 'sep', 'manual', 'sep', 'next', 'last', 'sep', 'refresh', 'info']
+        });
+    };
+
     this.OnTableGridLoaded = function (data) {
         this.table.datagrid('selectRow', 0);
     };
@@ -80,22 +65,68 @@ var App = function () {
         }
     };
 
-    this.OnTableGridBeforeLoad = function () {
-        this.table.datagrid('getPager').pagination({
-            beforePageText: '第',
-            afterPageText: '页&nbsp;&nbsp;&nbsp;共{pages}页',
-            displayMsg: '当前显示{from}-{to}条记录&nbsp;&nbsp;&nbsp;共{total}条记录',
-            layout: ['list', 'sep', 'first', 'prev', 'sep', 'manual', 'sep', 'next', 'last', 'sep', 'refresh', 'info']
+    this.ReloadData = function () {
+        this.table.datagrid({
+            method: "POST",
+            url: 'caller/findAllByPage',
+            queryParams: {
+                page: 1,
+                rows: 10
+            }
         });
     };
 
     this.OnAddButtonClick = function () {
+        this.SettingAddDialog();
+        this.SettingAddEvent();
+    };
+
+    this.SettingAddDialog = function () {
         $('.dialog-add').show();
         $('.dialog-bg').show();
         $('.option i').hide();
-        $('.option input').val("");
+        $('.option input').val('');
         $('.option input').css('borderColor','#53556c');
         $('#add-switch').addClass('switch-on')
+    };
+
+    this.SettingAddEvent = function () {
+        $('#add-sure').on('click', this.AddCaller.bind(this));
+        $('#add-cancel').on('click', this.AddDialogHide.bind(this));
+        $('#add-close').on('click', this.AddDialogHide.bind(this));
+        $('#add-switch a').on('click', this.OnSwitchButtonClick.bind(this));
+    };
+
+    this.AddCaller = function () {
+        var department = $('#department').val().trim();
+        var loginName =  $('#login-name').val().trim();
+        var realName =  $('#real-name').val().trim();
+        var loginPassword =  $('#login-password').val().trim();
+        var role =  $('#role').val().trim();
+
+        if (this.CheckInput(department, loginName, realName, loginPassword, role)){
+            this.Add(department, loginName, realName, loginPassword, role);
+        }
+    };
+
+    this.Add = function (department, loginName, realName, loginPassword, role) {
+        $.ajax({
+            type: 'post',
+            url: '/caller/addCaller',
+            data: {
+                department: department,
+                loginName: loginName,
+                realName: realName,
+                loginPassword: loginPassword,
+                role: role,
+                enabled: $('#add-switch').hasClass('switch-on') ? 1 : 0
+            },
+            dataType: 'json',
+            success: function () {
+                this.AddDialogHide();
+                this.ReloadData();
+            }.bind(this)
+        });
     };
 
     this.AddDialogHide = function () {
@@ -104,6 +135,11 @@ var App = function () {
     };
 
     this.OnEditButtonClick = function () {
+        this.SettingEditDialog();
+        this.SettingEditEvent();
+    };
+
+    this.SettingEditDialog = function () {
         $('.dialog-edit').show();
         $('.dialog-bg').show();
 
@@ -120,6 +156,13 @@ var App = function () {
             $('#edit-switch').removeClass('switch-on');
     };
 
+    this.SettingEditEvent = function () {
+        $('#edit-sure').on('click', this.EditCaller.bind(this));
+        $('#edit-cancel').on('click', this.EditDialogHide.bind(this));
+        $('#edit-close').on('click', this.EditDialogHide.bind(this));
+        $('#edit-switch a').on('click', this.OnSwitchButtonClick.bind(this));
+    };
+
     this.EditDialogHide = function () {
         $('.dialog-edit').hide();
         $('.dialog-bg').hide();
@@ -127,17 +170,6 @@ var App = function () {
 
     this.OnSwitchButtonClick = function (event) {
         $(event.target).parent().toggleClass('switch-on');
-    };
-
-    this.AddUser = function () {
-        var department = $('#department').val().trim();
-        var loginName =  $('#login-name').val().trim();
-        var realName =  $('#real-name').val().trim();
-        var loginPassword =  $('#login-password').val().trim();
-        var role =  $('#role').val().trim();
-        if (this.CheckInput(department, loginName, realName, loginPassword, role)){
-            this.AddCaller(department, loginName, realName, loginPassword, role);
-        }
     };
 
     this.CheckInput = function (department, loginName, realName, loginPassword, role) {
@@ -210,30 +242,10 @@ var App = function () {
         return value;
     };
 
-    this.AddCaller = function (department, loginName, realName, loginPassword, role) {
+    this.EditCaller = function () {
         $.ajax({
-            type: "POST",
-            dataType: 'json',
-            data: {
-                department: department,
-                loginName: loginName,
-                realName: realName,
-                loginPassword: loginPassword,
-                role: role,
-                enabled: $('#add-switch').hasClass('switch-on') ? 1 : 0
-            },
-            url: 'caller/addCaller',
-            success: function () {
-                this.AddDialogHide();
-                this.ReloadData();
-            }.bind(this)
-        });
-    };
-
-    this.EditUser = function () {
-        this.EditDialogHide();
-        $.ajax({
-            type: "POST",
+            type: 'post',
+            url: '/caller/updateCaller',
             dataType: 'json',
             data: {
                 code: this.table.datagrid('getSelected').code,
@@ -244,38 +256,47 @@ var App = function () {
                 role: $('#edit-role').val(),
                 enabled: $('#edit-switch').hasClass('switch-on') ? 1 : 0
             },
-            url: 'caller/updateCaller',
             success: function () {
+                this.EditDialogHide();
                 this.ReloadData();
             }.bind(this)
         });
     };
 
     this.OnDeleteButtonClick = function () {
+        this.SettingDeleteDialog();
+        this.SettingDeleteEvent();
+    };
+
+    this.SettingDeleteDialog = function () {
         $('.dialog-delete').show();
         $('.dialog-bg').show();
-        $('#hint-txt').text(this.table.datagrid('getSelected').loginName)
+        $('#hint-txt').text(this.table.datagrid('getSelected').loginName);
     };
 
-    this.DeleteDialogHide = function () {
-        $('.dialog-delete').hide();
-        $('.dialog-bg').hide();
+    this.SettingDeleteEvent = function () {
+        $('#delete-sure').on('click', this.DeleteCaller.bind(this));
+        $('#delete-cancel').on('click', this.DeleteDialogHide.bind(this));
+        $('#delete-close').on('click', this.DeleteDialogHide.bind(this));
     };
 
-    this.DeleteUser = function () {
+    this.DeleteCaller = function () {
         this.DeleteDialogHide();
         $.ajax({
-            type: "POST",
+            type: 'post',
+            url: '/caller/deleteCaller',
             dataType: 'json',
-            data: {
-                code: this.table.datagrid('getSelected').code,
-            },
-            url: 'caller/deleteCaller',
+            data: {code: this.table.datagrid('getSelected').code},
             success: function () {
                 this.ReloadData();
             }.bind(this)
         });
     }
+
+    this.DeleteDialogHide = function () {
+        $('.dialog-delete').hide();
+        $('.dialog-bg').hide();
+    };
 };
 
 $(document).ready(function () {
