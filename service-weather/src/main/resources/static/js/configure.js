@@ -4,11 +4,7 @@ var App = function () {
     this.Startup = function () {
         this.ReLayout();
         this.InitConfigureGrid();
-
         $('#edit').on('click', this.OnEditButtonClick.bind(this));
-        $('#edit-close').on('click', this.EditDialogHide.bind(this));
-        $('#edit-sure').on('click', this.EditConfigure.bind(this));
-        $('#edit-quit').on('click', this.EditDialogHide.bind(this));
         window.onresize = this.ReLayout.bind(this);
     };
 
@@ -60,6 +56,11 @@ var App = function () {
     };
 
     this.OnEditButtonClick = function () {
+        this.SettingEditDialog();
+        this.SettingEditEvent();
+    };
+
+    this.SettingEditDialog = function () {
         $('.dialog-edit').show();
         $('.dialog-bg').show();
 
@@ -71,6 +72,12 @@ var App = function () {
 
         var index = this.table.datagrid('getRowIndex',selected.id);
         this.table.datagrid('beginEdit', index);
+    };
+
+    this.SettingEditEvent = function () {
+        $('#edit-sure').on('click', this.EditConfigure.bind(this));
+        $('#edit-cancel').on('click', this.EditDialogHide.bind(this));
+        $('#edit-close').on('click', this.EditDialogHide.bind(this));
     };
 
     this.EditDialogHide = function () {

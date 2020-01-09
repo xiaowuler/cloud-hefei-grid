@@ -7,7 +7,6 @@ var App = function () {
         this.InitPortGrid();
         this.ReLoadTableData();
         this.ReloadPortChart();
-
         window.onresize = this.ReLayout.bind(this);
     };
 
@@ -184,7 +183,9 @@ var App = function () {
         var width = $(window).width();
         $('#port-table').datagrid({
             columns: [[
-                { field: 'explain', title: '名称', align: 'center', width: width * 0.2},
+                { field: 'explain', title: '名称', align: 'center', width: width * 0.2, formatter: function (value) {
+                        return "<span title='" + value + "'>" + value + "</span>" }
+                },
                 { field: 'dayBeforeInvokeCount', title: '前天调用次数', align: 'center', width: width * 0.15},
                 { field: 'yesterdayInvokeCount', title: '昨天调用次数', align: 'center', width: width * 0.15},
                 { field: 'todayInvokeCount', title: '今天调用次数', align: 'center', width: width * 0.15},

@@ -24,7 +24,9 @@ var App = function () {
         this.table.datagrid({
             columns: [[
                 { field: 'loginName', title: '用户名', align: 'center', width: 30},
-                { field: 'url', title: 'URL', align: 'center', width: 200}
+                { field: 'url', title: 'URL', align: 'center', width: 200, formatter: function (value) {
+                        return "<span title='" + value + "'>" + value + "</span>" }
+                }
             ]],
             striped: true,
             singleSelect: true,
