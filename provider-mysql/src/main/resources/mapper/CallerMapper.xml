@@ -10,7 +10,9 @@
     </select>
 
     <select id = "findCodeAndLoginName" resultType = "com.pingchuan.domain.Caller">
-        select `code`, login_name as loginName from callers
+        select c.`code`, c.loginName
+        from(select ci.caller_code, c.`code`, c.login_name as loginName from callers c left join caller_interfaces ci on ci.caller_code = c.`code`) c
+        where c.caller_code is null
     </select>
 
     <select id = "findCallerAuthorizationCount" resultType = "int">

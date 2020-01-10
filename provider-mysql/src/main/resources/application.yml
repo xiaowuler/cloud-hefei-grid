@@ -23,3 +23,7 @@ spring:
 mybatis:
   mapper-locations: classpath*:mapper/*.xml # mapper文件扫描
   type-aliases-package: com.pingchuan.domain, com.pingchuan.dto.web # 别名扫描
+
+logging:
+  level:
+    com.pingchuan.providermysql.mapper: debug

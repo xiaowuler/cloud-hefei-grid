@@ -121,9 +121,9 @@ var App = function () {
         $('.cancel').attr('id', 'add-cancel');
         $('.close').attr('id', 'add-close');
 
-        $('#add-sure').on('click', this.AddCallerInterfaces.bind(this));
-        $('#add-cancel').on('click', this.DialogCommonHide.bind(this));
-        $('#add-close').on('click', this.DialogCommonHide.bind(this));
+        $('#add-sure').off('click').on('click', this.AddCallerInterfaces.bind(this));
+        $('#add-cancel').off('click').on('click', this.DialogCommonHide.bind(this));
+        $('#add-close').off('click').on('click', this.DialogCommonHide.bind(this));
     };
 
     this.InitLoginName = function () {
@@ -133,6 +133,7 @@ var App = function () {
             url: '/caller/findCodeAndLoginName',
             valueField: 'code',
             textField: 'loginName',
+            editable:false,
             onLoadSuccess: function (result) {
                 var item = $loginName.combobox('getData');
                 if (item.length > 0) {
@@ -145,7 +146,13 @@ var App = function () {
 
     this.AddCallerInterfaces = function () {
         var code = $('#login-name').combobox('getValue');
+        if (this.CheckLoginNameCode(code))
+            return;
+
         var interfaceIds = this.GetInterfaceIds();
+        if (this.CheckFiltrateGridSelected(interfaceIds))
+            return;
+
         $.ajax({
             type: 'post',
             url: '/callerInterface/addCallerInterface',
@@ -155,6 +162,15 @@ var App = function () {
             }.bind(this)
         });
         this.DialogCommonHide();
+    };
+
+    this.CheckLoginNameCode = function (code) {
+        if (code.length === 0){
+            $('#login-name-hint').text('用户全部授权').css('color', '#ff2828');
+            $('#login-name-hint').show();
+            return true;
+        }
+        return false;
     };
 
     this.OnEditButtonClick = function () {
@@ -199,19 +215,22 @@ var App = function () {
     };
 
     this.SettingEditAttrAndEvent = function () {
-        $('.sure').attr('id', 'edit-sure');
-        $('.cancel').attr('id', 'edit-cancel');
-        $('.close').attr('id', 'edit-close')
+        $('.sure').removeAttr('id').attr('id', 'edit-sure');
+        $('.cancel').removeAttr('id').attr('id', 'edit-cancel');
+        $('.close').removeAttr('id').attr('id', 'edit-close')
 
-        $('#edit-sure').on('click', this.UpdateCallerInterface.bind(this));
-        $('#edit-cancel').on('click', this.DialogCommonHide.bind(this));
-        $('#edit-close').on('click', this.DialogCommonHide.bind(this));
+        $('#edit-sure').off('click').on('click', this.UpdateCallerInterface.bind(this));
+        $('#edit-cancel').off('click').on('click', this.DialogCommonHide.bind(this));
+        $('#edit-close').off('click').on('click', this.DialogCommonHide.bind(this));
     };
 
     this.UpdateCallerInterface = function () {
         var selected = this.table.datagrid('getSelected');
         var code = selected.code;
         var interfaceIds = this.GetInterfaceIds();
+        if (this.CheckFiltrateGridSelected(interfaceIds))
+            return;
+
         $.ajax({
             type: 'post',
             url: '/callerInterface/updateCallerInterface',
@@ -232,7 +251,18 @@ var App = function () {
         return interfaceIds;
     };
 
+    this.CheckFiltrateGridSelected = function (interfaceIds) {
+        if(interfaceIds.length === 0){
+            $('#error').text('请选择接口').css('color', '#ff2828');
+            $('#error').show();
+            return true;
+        }
+        return false;
+    };
+
     this.DialogCommonHide = function () {
+        $('#login-name-hint').hide()
+        $('#error').hide();
         $('.dialog-common').hide();
         $('.dialog-bg').hide();
     };

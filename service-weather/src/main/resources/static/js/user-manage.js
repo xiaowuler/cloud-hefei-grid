@@ -90,10 +90,10 @@ var App = function () {
     };
 
     this.SettingAddEvent = function () {
-        $('#add-sure').on('click', this.AddCaller.bind(this));
-        $('#add-cancel').on('click', this.AddDialogHide.bind(this));
-        $('#add-close').on('click', this.AddDialogHide.bind(this));
-        $('#add-switch a').on('click', this.OnSwitchButtonClick.bind(this));
+        $('#add-sure').off('click').on('click', this.AddCaller.bind(this));
+        $('#add-cancel').off('click').on('click', this.AddDialogHide.bind(this));
+        $('#add-close').off('click').on('click', this.AddDialogHide.bind(this));
+        $('#add-switch a').off('click').on('click', this.OnSwitchButtonClick.bind(this));
     };
 
     this.AddCaller = function () {
@@ -194,10 +194,10 @@ var App = function () {
     };
 
     this.SettingEditEvent = function () {
-        $('#edit-sure').on('click', this.EditCaller.bind(this));
-        $('#edit-cancel').on('click', this.EditDialogHide.bind(this));
-        $('#edit-close').on('click', this.EditDialogHide.bind(this));
-        $('#edit-switch a').on('click', this.OnSwitchButtonClick.bind(this));
+        $('#edit-sure').off('click').on('click', this.EditCaller.bind(this));
+        $('#edit-cancel').off('click').on('click', this.EditDialogHide.bind(this));
+        $('#edit-close').off('click').on('click', this.EditDialogHide.bind(this));
+        $('#edit-switch a').off('click').on('click', this.OnSwitchButtonClick.bind(this));
     };
 
     this.EditDialogHide = function () {
@@ -352,9 +352,9 @@ var App = function () {
     };
 
     this.SettingDeleteEvent = function () {
-        $('#delete-sure').on('click', this.DeleteCaller.bind(this));
-        $('#delete-cancel').on('click', this.DeleteDialogHide.bind(this));
-        $('#delete-close').on('click', this.DeleteDialogHide.bind(this));
+        $('#delete-sure').off('click').on('click', this.DeleteCaller.bind(this));
+        $('#delete-cancel').off('click').on('click', this.DeleteDialogHide.bind(this));
+        $('#delete-close').off('click').on('click', this.DeleteDialogHide.bind(this));
     };
 
     this.DeleteCaller = function () {

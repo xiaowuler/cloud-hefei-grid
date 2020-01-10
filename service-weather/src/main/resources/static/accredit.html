@@ -71,11 +71,11 @@
         <button class="close"></button>
         <div class="dialog-detail">
             <div class="option option-name">
-                <label>用户名 *</label>
-                <select id="login-name" class="easyui-combobox" name="login-name"></select>
+                <label>用户名 * <i id="login-name-hint"></i></label>
+                <select id="login-name" class="easyui-combobox" name="login-name" data-options = "panelHeight: 'auto', panelMaxHeight: 200"></select>
             </div>
             <div class="option option-filtrate">
-                <label>接口筛选 *</label>
+                <label>接口筛选 * <i id="error"></i></label>
                 <div class="filtrate-table table">
                     <table id="filtrate-table" class="easyui-datagrid"></table>
                 </div>
