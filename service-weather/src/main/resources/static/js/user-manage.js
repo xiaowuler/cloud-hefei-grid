@@ -179,6 +179,8 @@ var App = function () {
     this.SettingEditDialog = function () {
         $('.dialog-edit').show();
         $('.dialog-bg').show();
+        $('.option i').hide();
+        $('.option input').css('borderColor','#53556c');
 
         var selected = this.table.datagrid('getSelected');
         $('#code').val(selected.code);

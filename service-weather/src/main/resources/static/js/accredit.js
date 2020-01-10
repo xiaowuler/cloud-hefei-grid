@@ -25,7 +25,7 @@ var App = function () {
             columns: [[
                 { field: 'loginName', title: '用户名', align: 'center', width: 30},
                 { field: 'url', title: 'URL', align: 'center', width: 200, formatter: function (value) {
-                        return "<span title='" + value + "'>" + value + "</span>" }
+                        return "<span title='" + value + "' class='note'>" + value + "</span>" }
                 }
             ]],
             striped: true,
@@ -54,6 +54,24 @@ var App = function () {
 
     this.OnTableGridLoaded = function (data) {
         this.table.datagrid('selectRow', 0);
+        this.InitTooltip();
+    };
+
+    this.InitTooltip = function () {
+        $(".note").tooltip({
+            onShow: function () {
+                $(this).tooltip('tip').css({
+                    width: $('.note').width(),
+                    color: '#9e9e9e',
+                    borderColor: '#3b3d51',
+                    boxShadow: '1px 1px 3px rgba(0,55,94,0.15)'
+                });
+            },
+            onPosition: function () {
+                $(this).tooltip('tip').css('left', $(this).offset().left);
+                $(this).tooltip('arrow').css('left', 20);
+            }
+        });
     };
 
     this.ReloadData = function () {
